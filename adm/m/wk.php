@@ -306,8 +306,9 @@ else
 	
 	<select name="kelas" class="btn btn-warning">
 	<option value="" selected>-Kelas-</option>';
+	
 	$qrung = mysqli_query($koneksi, "SELECT * FROM m_kelas ".
-										"ORDER BY nama ASC");
+										"ORDER BY round(no) ASC");
 	$rrung = mysqli_fetch_assoc($qrung);
 
 	do

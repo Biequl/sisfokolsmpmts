@@ -490,10 +490,15 @@ if (!empty($kunci))
 					"OR item_thn LIKE '%$kunci%' ".
 					"OR item_bln LIKE '%$kunci%' ".
 					"OR item_nama LIKE '%$kunci%' ".
-					"OR item_nominal LIKE '%$kunci%' ".
+					"OR nominal_kurang LIKE '%$kunci%' ".
 					"OR siswa_kode LIKE '%$kunci%' ".
 					"OR siswa_nama LIKE '%$kunci%') ".
-					"ORDER BY nama ASC";
+					"ORDER BY item_tapel DESC, ".
+					"item_smt ASC, ".
+					"item_thn DESC, ".
+					"round(item_bln) ASC, ".
+					"item_kelas ASC, ".
+					"item_nama ASC";
 	$sqlresult = $sqlcount;
 
 	$count = mysqli_num_rows(mysqli_query($koneksi, $sqlcount));
