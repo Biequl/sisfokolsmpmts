@@ -95,14 +95,6 @@ TAMPILAN HALAMAN WEB SISFOKOL-SMP :
 
 <img src="tmp_tampilan/image_12.png" width="100%">
 
-<img src="tmp_tampilan/image_13.png" width="100%">
-
-<img src="tmp_tampilan/image_14.png" width="100%">
-
-<img src="tmp_tampilan/image_15.png" width="100%">
-
-<img src="tmp_tampilan/image_16.png" width="100%">
-
 
 
 
