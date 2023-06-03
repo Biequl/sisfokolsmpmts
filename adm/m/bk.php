@@ -126,10 +126,6 @@ if ($_POST['btnTBH'])
 		}
 	else
 		{
-		//hapus dulu, sebelum entri
-		mysqli_query($koneksi, "DELETE FROM m_gurubk");
-		
-		
 		//query
 		mysqli_query($koneksi, "INSERT INTO m_gurubk(kd, peg_kd, ".
 									"peg_kode, peg_nama, postdate) VALUES ".
