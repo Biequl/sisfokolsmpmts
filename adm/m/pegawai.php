@@ -1,8 +1,8 @@
 <?php
 ///////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////
-/////// SISFOKOL_SMP_v6.78_(Code:Tekniknih)                     ///////
-/////// (Sistem Informasi Sekolah untuk SMP)                    ///////
+/////// SISFOKOL_SMA_v6.78_(Code:Tekniknih)                     ///////
+/////// (Sistem Informasi Sekolah untuk SMA)                    ///////
 ///////////////////////////////////////////////////////////////////////
 /////// Dibuat oleh :                                           ///////
 /////// Agus Muhajir, S.Kom                                     ///////
@@ -51,6 +51,20 @@ if ((empty($page)) OR ($page == "0"))
 	}
 
 
+require '../../inc/class/PhpOffice/autoload.php';
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+	
+$reader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
+	
+	
+
+
+
+
+	
+	
+
 
 $limit = 5;
 
@@ -76,7 +90,7 @@ if ($_POST['btnIM'])
 
 
 
-//lama
+
 //import sekarang
 if ($_POST['btnIMX'])
 	{
@@ -119,60 +133,48 @@ if ($_POST['btnIMX'])
 			//file-nya...
 			$uploadfile = $path3;
 
-
-
-
-
-			//require
-			require('../../inc/class/PHPExcel.php');
-			require('../../inc/class/PHPExcel/IOFactory.php');
-
-
-			  // load excel
-			  $load = PHPExcel_IOFactory::load($uploadfile);
-			  $sheets = $load->getActiveSheet()->toArray(null,true,true,true);
+		
+			$spreadsheet = $reader->load($uploadfile);
 			
-			  $i = 1;
-			  foreach ($sheets as $sheet) 
-			  	{
-			    // karena data yang di excel di mulai dari baris ke 2
-			    // maka jika $i lebih dari 1 data akan di masukan ke database
-			    if ($i > 1) 
-			    	{
-				      // nama ada di kolom A
-				      // sedangkan alamat ada di kolom B
-				      $i_no = cegah($sheet['A']);
-				      $i_nip = cegah($sheet['B']);
-				      $i_username = cegah($sheet['C']);
-				      $i_nama = cegah($sheet['D']);
-				      $i_jabatan = cegah($sheet['E']);
-
-
-
-				      $i_xyz = md5($i_nip);
-					  
-
-					  
-					  //user pass
-					  $i_user = $i_username;
-					  $i_pass = md5($i_nip);
-
-
-					//insert
-					mysqli_query($koneksi, "INSERT INTO m_pegawai(kd, kode, nama, ".
-											"jabatan, usernamex, ".
-											"passwordx, postdate) VALUES ".
-											"('$i_xyz', '$i_nip', '$i_nama', ".
-											"'$i_jabatan', '$i_user', ".
-											"'$i_pass', '$today')");
-
-					  
-				    }
+			$d=$spreadsheet->getSheet(0)->toArray();
 			
-			    $i++;
-			  }
+			$sheetData = $spreadsheet->getActiveSheet()->toArray();
+			
+			$i=1;
+			unset($sheetData[0]);
+			
+			foreach ($sheetData as $t) {
+				//nilai
+				$i_no = cegah($t[0]);
+				$i_nip = cegah($t[1]);
+				$i_username = cegah($t[2]);
+				$i_nama = cegah($t[3]);
+				$i_jabatan = cegah($t[4]);
+				
+				
+				//echo "$i_no. $i_nip. $i_username. $i_nama. $i_jabatan <br>";
+				
+				$i_xyz = md5($i_nip);
+					  
+				//user pass
+				$i_user = $i_username;
+				$i_pass = md5($i_nip);
 
 
+				//insert
+				mysqli_query($koneksi, "INSERT INTO m_pegawai(kd, kode, nama, ".
+										"jabatan, usernamex, ".
+										"passwordx, postdate) VALUES ".
+										"('$i_xyz', '$i_nip', '$i_nama', ".
+										"'$i_jabatan', '$i_user', ".
+										"'$i_pass', '$today')");
+			
+				
+				$i++;
+				}
+				
+			
+			
 
 
 
@@ -198,6 +200,8 @@ if ($_POST['btnIMX'])
 	}
 
 
+ 
+ 
 
 
 

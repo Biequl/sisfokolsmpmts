@@ -1,8 +1,8 @@
 <?php
 ///////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////
-/////// SISFOKOL_SMP_v6.78_(Code:Tekniknih)                     ///////
-/////// (Sistem Informasi Sekolah untuk SMP)                    ///////
+/////// SISFOKOL_SMA_v6.78_(Code:Tekniknih)                     ///////
+/////// (Sistem Informasi Sekolah untuk SMA)                    ///////
 ///////////////////////////////////////////////////////////////////////
 /////// Dibuat oleh :                                           ///////
 /////// Agus Muhajir, S.Kom                                     ///////
@@ -51,6 +51,19 @@ if ((empty($page)) OR ($page == "0"))
 	}
 	
 	
+
+
+require '../../inc/class/PhpOffice/autoload.php';
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+	
+$reader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
+	
+	
+
+
+
+
 
 
 //PROSES ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,82 +131,75 @@ if ($_POST['btnIMX'])
 			$uploadfile = $path3;
 
 
-			//require
-			require('../../inc/class/PHPExcel.php');
-			require('../../inc/class/PHPExcel/IOFactory.php');
-
-
-			  // load excel
-			  $load = PHPExcel_IOFactory::load($uploadfile);
-			  $sheets = $load->getActiveSheet()->toArray(null,true,true,true);
+		
+			$spreadsheet = $reader->load($uploadfile);
 			
-			  $i = 1;
-			  foreach ($sheets as $sheet) 
-			  	{
-			    // karena data yang di excel di mulai dari baris ke 2
-			    // maka jika $i lebih dari 1 data akan di masukan ke database
-			    if ($i > 1) 
-			    	{
-				      // nama ada di kolom A
-				      // sedangkan alamat ada di kolom B
-				      $i_xyz = md5("$x$i");
-				      $i_no = cegah($sheet['A']);
-				      $i_tapel = cegah($sheet['B']);
-				      $i_kelas = cegah($sheet['C']);
-				      $i_nourut = cegah($sheet['D']);
-				      $i_kode = cegah($sheet['E']);
-				      $i_nama = cegah($sheet['F']);
-					  
-					  
-					  //user pass
-					  $i_kodex = md5("$i_tapel$i_kode");
-					  
-					  
-					  //kasi random depan...
-					  $kdepan = rand(1000, 10000);
-					  $i_qrcode = "$kdepan$i_kode";
-					  
-						//cek
-						$qcc = mysqli_query($koneksi, "SELECT * FROM m_siswa ".
-														"WHERE tapel = '$i_tapel' ".
-														"AND kode = '$i_kode'");
-						$rcc = mysqli_fetch_assoc($qcc);
-						$tcc = mysqli_num_rows($qcc);
-		
-						//jika ada, update				
-						if (!empty($tcc))
-							{
-							mysqli_query($koneksi, "UPDATE m_siswa SET nama = '$i_nama' ".
-														"WHERE tapel = '$i_tapel' ".
-														"AND kode = '$i_kode'");
-							}
-		
-		
-						else
-							{
-							//insert
-							mysqli_query($koneksi, "INSERT INTO m_siswa(kd, tapel, kelas, ".
-														"nourut, kode, nama, qrcode, postdate) VALUES ".
-														"('$i_kodex', '$i_tapel', '$i_kelas', ".
-														"'$i_nourut', '$i_kode', '$i_nama', '$i_qrcode', '$today')");
-														
-																												
-							
-							//insert
-							mysqli_query($koneksi, "INSERT INTO m_user(kd, usernamex, passwordx, ".
-														"kode, nama, jabatan, ".
-														"tapel, kelas, postdate) VALUES ".
-														"('$i_kodex', '$i_kode', '$i_kodex', ".
-														"'$i_kode', '$i_nama', 'SISWA', ".
-														"'$i_tapel', '$i_kelas', '$today')");
-														
-							}
-					  
-				    }
+			$d=$spreadsheet->getSheet(0)->toArray();
 			
-			    $i++;
-			  }
+			$sheetData = $spreadsheet->getActiveSheet()->toArray();
+			
+			$i=1;
+			unset($sheetData[0]);
+			
+			foreach ($sheetData as $t) {
+				//nilai
+			      $i_no = cegah($t[0]);
+			      $i_tapel = cegah($t[1]);
+			      $i_kelas = cegah($t[2]);
+			      $i_nourut = cegah($t[3]);
+			      $i_kode = cegah($t[4]);
+			      $i_nama = cegah($t[5]);
 
+				  				  
+				  
+				  //user pass
+				  $i_kodex = md5("$i_tapel$i_kode");
+				  
+				  
+				  //kasi random depan...
+				  $kdepan = rand(1000, 10000);
+				  $i_qrcode = "$kdepan$i_kode";
+				  
+					//cek
+					$qcc = mysqli_query($koneksi, "SELECT * FROM m_siswa ".
+													"WHERE tapel = '$i_tapel' ".
+													"AND kode = '$i_kode'");
+					$rcc = mysqli_fetch_assoc($qcc);
+					$tcc = mysqli_num_rows($qcc);
+	
+					//jika ada, update				
+					if (!empty($tcc))
+						{
+						mysqli_query($koneksi, "UPDATE m_siswa SET nama = '$i_nama' ".
+													"WHERE tapel = '$i_tapel' ".
+													"AND kode = '$i_kode'");
+						}
+	
+	
+					else
+						{
+						//insert
+						mysqli_query($koneksi, "INSERT INTO m_siswa(kd, tapel, kelas, ".
+													"nourut, kode, nama, qrcode, postdate) VALUES ".
+													"('$i_kodex', '$i_tapel', '$i_kelas', ".
+													"'$i_nourut', '$i_kode', '$i_nama', '$i_qrcode', '$today')");
+													
+																											
+						
+						//insert
+						mysqli_query($koneksi, "INSERT INTO m_user(kd, usernamex, passwordx, ".
+													"kode, nama, jabatan, ".
+													"tapel, kelas, postdate) VALUES ".
+													"('$i_kodex', '$i_kode', '$i_kodex', ".
+													"'$i_kode', '$i_nama', 'SISWA', ".
+													"'$i_tapel', '$i_kelas', '$today')");
+													
+						}
+			
+				
+				$i++;
+				}
+				
 
 
 
