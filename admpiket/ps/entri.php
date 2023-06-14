@@ -29,14 +29,14 @@ session_start();
 require("../../inc/config.php");
 require("../../inc/fungsi.php");
 require("../../inc/koneksi.php");
-require("../../inc/cek/adm.php");
+require("../../inc/cek/admpiket.php");
 require("../../inc/class/paging.php");
-$tpl = LoadTpl("../../template/adm.html");
+$tpl = LoadTpl("../../template/admpiket.html");
 
 nocache;
 
 //nilai
-$filenya = "presensi.php";
+$filenya = "entri.php";
 $judul = "[PRESENSI]. Entri Presensi Harian";
 $judulku = "[PRESENSI]. Entri Presensi Harian";
 $judulx = $judul;
@@ -283,7 +283,7 @@ echo '<div class="row">
 				  scanner.addListener('scan', function (content) {
 				
 				    //alert(content);
-				    window.location.href = "presensi.php?artkd="+content; 
+				    window.location.href = "<?php echo $filenya;?>?artkd="+content; 
 				
 				  });
 				

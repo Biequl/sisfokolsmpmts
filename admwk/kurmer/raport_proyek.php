@@ -30,20 +30,19 @@ session_start();
 require("../../inc/config.php");
 require("../../inc/fungsi.php");
 require("../../inc/koneksi.php");
-require("../../inc/cek/admsw.php");
+require("../../inc/cek/admwk.php");
 require("../../inc/class/paging.php");
-$tpl = LoadTpl("../../template/admsw.html");
+$tpl = LoadTpl("../../template/admwk.html");
 
 nocache;
 
 //nilai
-$filenya = "raport.php";
-$judul = "Cetak Raport";
-$judulku = "[PENILAIAN RAPORT]. $judul";
+$filenya = "raport_proyek.php";
+$judul = "Cetak Raport Proyek";
+$judulku = "[PENILAIAN KURMER]. $judul";
 $judulx = $judul;
 $tapelkd = cegah($_REQUEST['tapelkd']);
 $kelkd = cegah($_REQUEST['kelkd']);
-$smt = cegah($_REQUEST['smt']);
 $s = cegah($_REQUEST['s']);
 $page = nosql($_REQUEST['page']);
 if ((empty($page)) OR ($page == "0"))
@@ -51,7 +50,7 @@ if ((empty($page)) OR ($page == "0"))
 	$page = "1";
 	}
 
-$ke = "$filenya?tapelkd=$tapelkd&kelkd=$kelkd&smt=$smt&page=$page";
+$ke = "$filenya?tapelkd=$tapelkd&kelkd=$kelkd&page=$page";
 
 
 
@@ -114,26 +113,24 @@ Tahun Pelajaran : ';
 echo "<select name=\"tapel\" onChange=\"MM_jumpMenu('self',this,0)\" class=\"btn btn-warning\">";
 
 //terpilih
-$qtpx = mysqli_query($koneksi, "SELECT * FROM m_tapel ".
-						"WHERE nama = '$tapelkd'");
+$qtpx = mysqli_query($koneksi, "SELECT * FROM m_walikelas ".
+									"WHERE peg_kd = '$kd3_session' ".
+									"AND tapel_nama = '$tapelkd'");
 $rowtpx = mysqli_fetch_assoc($qtpx);
-$tpx_kd = nosql($rowtpx['kd']);
-$tpx_thn1 = cegah($rowtpx['nama']);
-$tpx_thn2 = balikin($rowtpx['nama']);
+$tpx_thn1 = cegah($rowtpx['tapel_nama']);
+$tpx_thn2 = balikin($rowtpx['tapel_nama']);
 
 echo '<option value="'.$tpx_thn1.'" selected>'.$tpx_thn2.'</option>';
 
-
-$qtp = mysqli_query($koneksi, "SELECT * FROM m_siswa ".
-								"WHERE kd = '$kd2_session' ".
-								"ORDER BY tapel DESC");
+$qtp = mysqli_query($koneksi, "SELECT * FROM m_walikelas ".
+								"WHERE peg_kd = '$kd3_session' ".
+								"ORDER BY tapel_nama DESC");
 $rowtp = mysqli_fetch_assoc($qtp);
 
 do
 	{
-	$tpkd = nosql($rowtp['kd']);
-	$tpth1 = cegah($rowtp['tapel']);
-	$tpth2 = balikin($rowtp['tapel']);
+	$tpth1 = cegah($rowtp['tapel_nama']);
+	$tpth2 = balikin($rowtp['tapel_nama']);
 
 	echo '<option value="'.$filenya.'?tapelkd='.$tpth1.'">'.$tpth2.'</option>';
 	}
@@ -143,39 +140,32 @@ echo '</select>,
 
 
 
-Semester : ';
-echo "<select name=\"smt\" onChange=\"MM_jumpMenu('self',this,0)\" class=\"btn btn-warning\">";
-echo '<option value="'.$smt.'" selected>'.$smt.'</option>
-<option value="'.$filenya.'?tapelkd='.$tapelkd.'&smt=1">1</option>
-<option value="'.$filenya.'?tapelkd='.$tapelkd.'&smt=2">2</option>
-</select>, 
-
-
 Kelas : ';
 echo "<select name=\"kelas\" onChange=\"MM_jumpMenu('self',this,0)\" class=\"btn btn-warning\">";
 
 //terpilih
-$qbtx = mysqli_query($koneksi, "SELECT * FROM m_kelas ".
-									"WHERE nama = '$kelkd'");
+$qbtx = mysqli_query($koneksi, "SELECT * FROM m_walikelas ".
+									"WHERE peg_kd = '$kd3_session' ".
+									"AND kelas_nama = '$kelkd'");
 $rowbtx = mysqli_fetch_assoc($qbtx);
 $btxkd = nosql($rowbtx['kd']);
-$btxkelas1 = cegah($rowbtx['nama']);
-$btxkelas2 = balikin($rowbtx['nama']);
+$btxkelas1 = cegah($rowbtx['kelas_nama']);
+$btxkelas2 = balikin($rowbtx['kelas_nama']);
 
 echo '<option value="'.$btxkelas1.'">'.$btxkelas2.'</option>';
 
-$qbt = mysqli_query($koneksi, "SELECT * FROM m_siswa ".
-								"WHERE kd = '$kd2_session' ".
-								"ORDER BY tapel DESC");
+$qbt = mysqli_query($koneksi, "SELECT * FROM m_walikelas ".
+								"WHERE peg_kd = '$kd3_session' ".
+								"ORDER BY kelas_nama ASC");
 $rowbt = mysqli_fetch_assoc($qbt);
 
 do
 	{
 	$btkd = nosql($rowbt['kd']);
-	$btkelas1 = cegah($rowbt['kelas']);
-	$btkelas2 = balikin($rowbt['kelas']);
+	$btkelas1 = cegah($rowbt['kelas_nama']);
+	$btkelas2 = balikin($rowbt['kelas_nama']);
 
-	echo '<option value="'.$filenya.'?tapelkd='.$tapelkd.'&smt='.$smt.'&kelkd='.$btkelas1.'">'.$btkelas2.'</option>';
+	echo '<option value="'.$filenya.'?tapelkd='.$tapelkd.'&kelkd='.$btkelas1.'">'.$btkelas2.'</option>';
 	}
 while ($rowbt = mysqli_fetch_assoc($qbt));
 
@@ -183,7 +173,6 @@ echo '</select>
 
 <input name="tapelkd" type="hidden" value="'.$tapelkd.'">
 <input name="kelkd" type="hidden" value="'.$kelkd.'">
-<input name="smt" type="hidden" value="'.$smt.'">
 </td>
 </tr>
 </table>
@@ -200,13 +189,6 @@ if (empty($tapelkd))
 	</p>';
 	}
 
-else if (empty($smt))
-	{
-	echo '<p>
-	<font color="#FF0000"><strong>SEMESTER Belum Dipilih...!</strong></font>
-	</p>';
-	}
-
 else if (empty($kelkd))
 	{
 	echo '<p>
@@ -220,8 +202,7 @@ else
 	echo '<form name="formx" method="post" action="'.$filenya.'">
 	
 	<input name="tapelkd" type="hidden" value="'.$tapelkd.'">
-	<input name="kelkd" type="hidden" value="'.$kelkd.'">
-	<input name="smt" type="hidden" value="'.$smt.'">';
+	<input name="kelkd" type="hidden" value="'.$kelkd.'">';
 	
 	
 	//query
@@ -301,9 +282,7 @@ else
 					<td>
 						'.$i_nama.'
 						<br>
-						<a href="raport_pdf.php?swkd='.$i_kd.'&swnis='.$i_nis.'&tapelkd='.$tapelkd.'&kelkd='.$kelkd.'&smt='.$smt.'" class="btn btn-danger" target="_blank">CETAK RAPORT K13 >></a>
-						<a href="raport_asesmen_pdf.php?swkd='.$i_kd.'&swnis='.$i_nis.'&tapelkd='.$tapelkd.'&kelkd='.$kelkd.'&smt='.$smt.'" class="btn btn-danger" target="_blank">CETAK RAPORT ASESMEN >></a>
-						<a href="raport_proyek_pdf.php?swkd='.$i_kd.'&swnis='.$i_nis.'&tapelkd='.$tapelkd.'&kelkd='.$kelkd.'&smt='.$smt.'" class="btn btn-danger" target="_blank">CETAK RAPORT PROYEK >></a>
+						<a href="raport_proyek_pdf.php?swkd='.$i_kd.'&swnis='.$i_nis.'&tapelkd='.$tapelkd.'&kelkd='.$kelkd.'&smt='.$smt.'" class="btn btn-danger" target="_blank">CETAK RAPORT >></a>
 					</td>
 
 				</tr>';
