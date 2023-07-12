@@ -29,16 +29,16 @@ session_start();
 require("../../inc/config.php");
 require("../../inc/fungsi.php");
 require("../../inc/koneksi.php");
-require("../../inc/cek/admpiket.php");
+require("../../inc/cek/adm.php");
 require("../../inc/class/paging.php");
-$tpl = LoadTpl("../../template/admpiket.html");
+$tpl = LoadTpl("../../template/adm.html");
 
 nocache;
 
 //nilai
-$filenya = "entri.php";
-$judul = "[PRESENSI]. Entri Kehadiran";
-$judulku = "[PRESENSI]. Entri Kehadiran";
+$filenya = "presensi_manual.php";
+$judul = "[PRESENSI]. Entri Manual Kehadiran";
+$judulku = "[PRESENSI]. Entri Manual Kehadiran";
 $judulx = $judul;
 $artkd = nosql($_REQUEST['artkd']);
 $kd = nosql($_REQUEST['kd']);
@@ -53,6 +53,8 @@ if ((empty($page)) OR ($page == "0"))
 	
 	
 
+
+$diload = "document.formxx.e_kode.focus();";
 
 //PROSES ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //nek batal
@@ -81,6 +83,171 @@ if ($_POST['btnCARI'])
 	}
 
 
+
+
+
+/*
+//jika simpan
+if ($_POST['btnSMP'])
+	{
+	//nilai
+	$e_kode = cegah($_POST['e_kode']);
+
+	
+	
+	//detail e
+	$qyuk = mysqli_query($koneksi, "SELECT * FROM m_user ".
+										"WHERE kode = '$e_kode'");
+	$ryuk = mysqli_fetch_assoc($qyuk);
+	$yuk_kd = cegah($ryuk['kd']);
+	$yuk_nama = cegah($ryuk['nama']);
+	$yuk_jabatan = cegah($ryuk['jabatan']);
+	$yuk_kelas = cegah($ryuk['kelas']);
+	$yuk_tapel = cegah($ryuk['tapel']);
+	
+	
+	
+	
+	//waktu
+	$qyuk2 = mysqli_query($koneksi, "SELECT * FROM m_waktu");
+	$ryuk2 = mysqli_fetch_assoc($qyuk2);
+	$yuk2_mjam = balikin($ryuk2['masuk_jam']);
+	$yuk2_mmenit = balikin($ryuk2['masuk_menit']);
+	
+	
+	
+	
+	
+	
+	$waktu_awal = strtotime("$tahun-$bulan-$tanggal $yuk2_mjam:$yuk2_mmenit:00");
+	$waktu_akhir = strtotime("$tahun-$bulan-$tanggal $jam:$menit:$detik"); // bisa juga waktu sekarang now()
+        
+
+    //jika memang terlambat
+    if ($waktu_awal < $waktu_akhir)
+		{
+		//menghitung selisih dengan hasil detik
+		$diffnya = $waktu_akhir - $waktu_awal;
+		
+		//membagi detik menjadi jam
+		$jamnya = floor($diffnya / (60 * 60));
+		
+		//membagi sisa detik setelah dikurangi $jam menjadi menit
+		$menitnya = $diffnya - $jamnya * (60 * 60);
+		
+		//menampilkan / print hasil
+		//echo 'Hasilnya adalah '.number_format($diff,0,",",".").' detik<br /><br />';
+		//echo 'Sehingga Anda memiliki sisa waktu promosi selama: ' . $jamnya .  ' jam dan ' . floor( $menitnya / 60 ) . ' menit';
+		
+		$menitnya2 = floor($menitnya / 60);
+		
+		$nilku = "$jamnya Jam, $menitnya2 Menit";
+		}
+		
+	else
+		{
+		$nilku = "-";
+		$jamnya = "0";
+		$menitnya2 = "0";
+		}
+	
+	
+	
+	
+							
+	//kd
+	$xyz = md5("$tahun:$bulan:$tanggal:$e_kode:MASUK");
+	
+	
+	//jika ada
+	if (!empty($yuk_kd))
+		{
+		//insert
+		mysqli_query($koneksi, "INSERT INTO user_presensi(kd, user_kd, user_kode, ".
+									"user_nama, user_jabatan, user_tapel, user_kelas, ".
+									"tanggal, postdate, status, ".
+									"ket, telat_ket, telat_jam, telat_menit) VALUES ".
+									"('$xyz', '$yuk_kd', '$e_kode', ".
+									"'$yuk_nama', '$yuk_jabatan', '$yuk_tapel', '$yuk_kelas', ".
+									"'$today', '$today', 'MASUK', ".
+									"'-', '$nilku', '$jamnya', '$menitnya2')");
+		}	
+	
+	
+	
+	
+	
+	
+					
+
+	//total point nya
+	$qyuk = mysqli_query($koneksi, "SELECT kd FROM user_presensi ".
+										"WHERE user_kd = '$yuk_kd'");
+	$ryuk = mysqli_fetch_assoc($qyuk);
+	$tyuk_subtotal = mysqli_num_rows($qyuk);
+
+	
+
+	//jika siswa
+	if ($yuk_jabatan == "SISWA")
+		{
+		//update kan
+		mysqli_query($koneksi, "UPDATE m_siswa SET jml_presensi = '$tyuk_subtotal' ".
+									"WHERE tapel = '$yuk_tapel' ".
+									"AND kode = '$e_kode'");
+		}	
+		
+	else if ($yuk_jabatan == "GURU")
+		{
+		//update kan
+		mysqli_query($koneksi, "UPDATE m_guru SET jml_presensi = '$tyuk_subtotal' ".
+									"WHERE kode = '$e_kode'");
+		}
+
+	
+	
+	
+
+	//re-direct
+	xloc($filenya);
+	exit();
+	}
+*/
+
+
+
+
+
+
+//jika simpan
+if ($_POST['btnSMP'])
+	{
+	//nilai
+	$e_kode = cegah($_POST['e_kode']);
+
+	
+	
+	//detail e
+	$qyuk = mysqli_query($koneksi, "SELECT * FROM m_user ".
+										"WHERE kode = '$e_kode' ".
+										"OR kd = '$e_kode'");
+	$ryuk = mysqli_fetch_assoc($qyuk);
+	$yuk_kd = cegah($ryuk['kd']);
+	$yuk_nama = cegah($ryuk['nama']);
+	$yuk_jabatan = cegah($ryuk['jabatan']);
+	$yuk_kelas = cegah($ryuk['kelas']);
+	$yuk_tapel = cegah($ryuk['tapel']);
+	
+	
+	
+	
+	
+
+	//re-direct
+	$ke = "$filenya?artkd=$yuk_kd";
+	xloc($ke);
+	exit();
+	}
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -123,52 +290,18 @@ echo '<div class="row">
             </div>
             
             <div class="card-body">';
-            ?>
-            
-            	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	
-				<script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
-				
-				
-				
-				<video id="preview" width="100%" height="100%"></video>
-				
-				<script type="text/javascript">
-				
-				  let scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
-				
-				  scanner.addListener('scan', function (content) {
-				
-				    //alert(content);
-				    window.location.href = "<?php echo $filenya;?>?artkd="+content; 
-				
-				  });
-				
-				  Instascan.Camera.getCameras().then(function (cameras) {
-				
-				    if (cameras.length > 0) {
-				
-				      scanner.start(cameras[0]);
-				
-				    } else {
-				
-				      console.error('No cameras found.');
-				
-				    }
-				
-				  }).catch(function (e) {
-				
-				    console.error(e);
-				
-				  });
-				
-				</script>
-				
+			
+			echo '<form action="'.$filenya.'" method="post" name="formxx">
+			<p>
+			NIS/NIP : 
+			<input name="e_kode" type="text" value="'.$e_kode.'" size="10" class="btn btn-warning" required>
+			<input name="btnSMP" type="submit" value="SIMPAN >>" class="btn btn-danger">
+			</p>
+			<hr>
+			
+			</form>';
+						
 
-        
-        
-		
-			<?php		    
             echo '</div>
         </div>';
 	?>
@@ -226,6 +359,8 @@ echo '<div class="row">
 						$yuk_kelasx = balikin($ryuk['kelas']);
 						$yuk_tapel = cegah($ryuk['tapel']);
 						
+						$e_kode = $yuk_kode;
+			
 						
 						
 						
@@ -316,7 +451,7 @@ echo '<div class="row">
 							mysqli_query($koneksi, "UPDATE m_siswa SET jml_presensi = '$tyuk_subtotal' ".
 														"WHERE tapel = '$yuk_tapel' ".
 														"AND kode = '$e_kode'");
-
+														
 							$yuk_ket = "NIS : $yuk_kodex. Kelas : $yuk_kelasx";
 							$yuk_ket1 = "NIS : $yuk_kodex";
 							$yuk_ket2 = "Kelas : $yuk_kelasx";
@@ -325,12 +460,12 @@ echo '<div class="row">
 							$nil_foto1 = "$sumber/img/user_thumb.png";
 							}	
 							
-						else 
+						else
 							{
 							//update kan
 							mysqli_query($koneksi, "UPDATE m_guru SET jml_presensi = '$tyuk_subtotal' ".
 														"WHERE kode = '$e_kode'");
-																					
+														
 							$yuk_ket = "NIP : $yuk_kodex";
 							$yuk_ket1 = "NIP : $yuk_kodex";
 							$yuk_ket2 = "";
@@ -341,7 +476,7 @@ echo '<div class="row">
 							}
 
 	
-	
+
 						echo '<div class="card card-primary card-outline">
 			              <div class="card-body box-profile">
 			                <div class="text-center">

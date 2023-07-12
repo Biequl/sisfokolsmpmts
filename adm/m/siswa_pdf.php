@@ -1,8 +1,8 @@
 <?php
 ///////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////
-/////// SISFOKOL_SMP_v6.78_(Code:Tekniknih)                     ///////
-/////// (Sistem Informasi Sekolah untuk SMP)                    ///////
+/////// SISFOKOL_SMA_v6.78_(Code:Tekniknih)                     ///////
+/////// (Sistem Informasi Sekolah untuk SMA)                    ///////
 ///////////////////////////////////////////////////////////////////////
 /////// Dibuat oleh :                                           ///////
 /////// Agus Muhajir, S.Kom                                     ///////
@@ -73,7 +73,7 @@ ob_start();
 
 
 //file image qrcode
-$fileku = "../../filebox/qrcode/$kd.png";
+$fileku = "../../filebox/qrcode/$ku_kode.png";
 ?>
 
 

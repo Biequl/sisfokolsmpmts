@@ -51,12 +51,6 @@ if ((empty($page)) OR ($page == "0"))
 	}
 
 
-require '../../inc/class/PhpOffice/autoload.php';
-
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-	
-$reader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
-	
 	
 
 
@@ -134,45 +128,57 @@ if ($_POST['btnIMX'])
 			$uploadfile = $path3;
 
 		
-			$spreadsheet = $reader->load($uploadfile);
-			
-			$d=$spreadsheet->getSheet(0)->toArray();
-			
-			$sheetData = $spreadsheet->getActiveSheet()->toArray();
-			
-			$i=1;
-			unset($sheetData[0]);
-			
-			foreach ($sheetData as $t) {
-				//nilai
-				$i_no = cegah($t[0]);
-				$i_nip = cegah($t[1]);
-				$i_username = cegah($t[2]);
-				$i_nama = cegah($t[3]);
-				$i_jabatan = cegah($t[4]);
 				
-				
-				//echo "$i_no. $i_nip. $i_username. $i_nama. $i_jabatan <br>";
-				
-				$i_xyz = md5($i_nip);
-					  
-				//user pass
-				$i_user = $i_username;
-				$i_pass = md5($i_nip);
+			//require
+			require('../../inc/class/PHPExcel.php');
+			require('../../inc/class/PHPExcel/IOFactory.php');
 
 
-				//insert
-				mysqli_query($koneksi, "INSERT INTO m_pegawai(kd, kode, nama, ".
-										"jabatan, usernamex, ".
-										"passwordx, postdate) VALUES ".
-										"('$i_xyz', '$i_nip', '$i_nama', ".
-										"'$i_jabatan', '$i_user', ".
-										"'$i_pass', '$today')");
+			  // load excel
+			  $load = PHPExcel_IOFactory::load($uploadfile);
+			  $sheets = $load->getActiveSheet()->toArray(null,true,true,true);
 			
-				
-				$i++;
-				}
-				
+			  $i = 1;
+			  foreach ($sheets as $sheet) 
+			  	{
+			    // karena data yang di excel di mulai dari baris ke 5
+			    // maka jika $i lebih dari 1 data akan di masukan ke database
+			    if ($i > 1) 
+			    	{
+				      // nama ada di kolom A
+				      // sedangkan alamat ada di kolom B
+				      $i_xyz = md5("$x$i");
+				      $i_no = cegah($sheet['A']);
+				      $i_nip = cegah($sheet['B']);
+				      $i_username = cegah($sheet['C']);
+				      $i_nama = cegah($sheet['D']);
+				      $i_jabatan = cegah($sheet['E']);
+
+
+							  
+						//user pass
+						$i_user = $i_username;
+						$i_pass = md5($i_nip);
+		
+		
+						//jika ada
+						if (!empty($i_user))
+							{
+							//insert
+							mysqli_query($koneksi, "INSERT INTO m_pegawai(kd, kode, nama, ".
+													"jabatan, usernamex, ".
+													"passwordx, postdate) VALUES ".
+													"('$i_xyz', '$i_nip', '$i_nama', ".
+													"'$i_jabatan', '$i_user', ".
+													"'$i_pass', '$today')");
+							}
+					
+
+				    }
+			
+			    $i++;
+			  }
+
 			
 			
 
@@ -945,7 +951,7 @@ else
 			
 			
 			<hr>
-			<a href="pegawai_qrcode.php?kd='.$i_kd.'" target="_blank" class="btn btn-danger">PRINT QRCODE >></a>			
+			<a href="pegawai_qrcode.php?kd='.$i_kd.'&kode='.$i_nip.'" target="_blank" class="btn btn-danger">PRINT QRCODE >></a>			
 			<hr>
 			<a href="'.$filenya.'?s=reset&kd='.$i_kd.'" class="btn btn-primary">RESET PASSWORD >></a>
 			

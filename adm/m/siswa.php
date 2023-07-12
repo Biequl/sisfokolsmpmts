@@ -50,14 +50,7 @@ if ((empty($page)) OR ($page == "0"))
 	$page = "1";
 	}
 	
-	
 
-
-require '../../inc/class/PhpOffice/autoload.php';
-
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-	
-$reader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
 	
 	
 
@@ -131,75 +124,89 @@ if ($_POST['btnIMX'])
 			$uploadfile = $path3;
 
 
-		
-			$spreadsheet = $reader->load($uploadfile);
+				
+			//require
+			require('../../inc/class/PHPExcel.php');
+			require('../../inc/class/PHPExcel/IOFactory.php');
+
+
+			  // load excel
+			  $load = PHPExcel_IOFactory::load($uploadfile);
+			  $sheets = $load->getActiveSheet()->toArray(null,true,true,true);
 			
-			$d=$spreadsheet->getSheet(0)->toArray();
-			
-			$sheetData = $spreadsheet->getActiveSheet()->toArray();
-			
-			$i=1;
-			unset($sheetData[0]);
-			
-			foreach ($sheetData as $t) {
-				//nilai
-			      $i_no = cegah($t[0]);
-			      $i_tapel = cegah($t[1]);
-			      $i_kelas = cegah($t[2]);
-			      $i_nourut = cegah($t[3]);
-			      $i_kode = cegah($t[4]);
-			      $i_nama = cegah($t[5]);
+			  $i = 1;
+			  foreach ($sheets as $sheet) 
+			  	{
+			    // karena data yang di excel di mulai dari baris ke 5
+			    // maka jika $i lebih dari 1 data akan di masukan ke database
+			    if ($i > 1) 
+			    	{
+				      // nama ada di kolom A
+				      // sedangkan alamat ada di kolom B
+				      $i_xyz = md5("$x$i");
+				      $i_no = cegah($sheet['A']);
+				      $i_tapel = cegah($sheet['B']);
+				      $i_kelas = cegah($sheet['C']);
+				      $i_nourut = cegah($sheet['D']);
+				      $i_kode = cegah($sheet['E']);
+				      $i_nama = cegah($sheet['F']);
+
+
+				      
 
 				  				  
-				  
-				  //user pass
-				  $i_kodex = md5("$i_tapel$i_kode");
-				  
-				  
-				  //kasi random depan...
-				  $kdepan = rand(1000, 10000);
-				  $i_qrcode = "$kdepan$i_kode";
-				  
-					//cek
-					$qcc = mysqli_query($koneksi, "SELECT * FROM m_siswa ".
-													"WHERE tapel = '$i_tapel' ".
-													"AND kode = '$i_kode'");
-					$rcc = mysqli_fetch_assoc($qcc);
-					$tcc = mysqli_num_rows($qcc);
-	
-					//jika ada, update				
-					if (!empty($tcc))
-						{
-						mysqli_query($koneksi, "UPDATE m_siswa SET nama = '$i_nama' ".
-													"WHERE tapel = '$i_tapel' ".
-													"AND kode = '$i_kode'");
-						}
-	
-	
-					else
-						{
-						//insert
-						mysqli_query($koneksi, "INSERT INTO m_siswa(kd, tapel, kelas, ".
-													"nourut, kode, nama, qrcode, postdate) VALUES ".
-													"('$i_kodex', '$i_tapel', '$i_kelas', ".
-													"'$i_nourut', '$i_kode', '$i_nama', '$i_qrcode', '$today')");
-													
-																											
-						
-						//insert
-						mysqli_query($koneksi, "INSERT INTO m_user(kd, usernamex, passwordx, ".
-													"kode, nama, jabatan, ".
-													"tapel, kelas, postdate) VALUES ".
-													"('$i_kodex', '$i_kode', '$i_kodex', ".
-													"'$i_kode', '$i_nama', 'SISWA', ".
-													"'$i_tapel', '$i_kelas', '$today')");
-													
-						}
+					  
+					  //user pass
+					  $i_kodex = md5("$i_tapel$i_kode");
+					  
+					  
+					  $i_qrcode = $i_kode;
+					  
+					  
+						//cek
+						$qcc = mysqli_query($koneksi, "SELECT * FROM m_siswa ".
+														"WHERE tapel = '$i_tapel' ".
+														"AND kode = '$i_kode'");
+						$rcc = mysqli_fetch_assoc($qcc);
+						$tcc = mysqli_num_rows($qcc);
+		
+						//jika ada, update				
+						if (!empty($tcc))
+							{
+							mysqli_query($koneksi, "UPDATE m_siswa SET nama = '$i_nama' ".
+														"WHERE tapel = '$i_tapel' ".
+														"AND kode = '$i_kode'");
+							}
+		
+		
+						else
+							{
+							//insert
+							mysqli_query($koneksi, "INSERT INTO m_siswa(kd, tapel, kelas, ".
+														"nourut, kode, nama, qrcode, postdate) VALUES ".
+														"('$i_kodex', '$i_tapel', '$i_kelas', ".
+														"'$i_nourut', '$i_kode', '$i_nama', '$i_qrcode', '$today')");
+														
+																												
+							
+							//insert
+							mysqli_query($koneksi, "INSERT INTO m_user(kd, usernamex, passwordx, ".
+														"kode, nama, jabatan, ".
+														"tapel, kelas, postdate) VALUES ".
+														"('$i_kodex', '$i_kode', '$i_kodex', ".
+														"'$i_kode', '$i_nama', 'SISWA', ".
+														"'$i_tapel', '$i_kelas', '$today')");
+														
+							}
+					  
+					  
+
+				    }
 			
-				
-				$i++;
-				}
-				
+			    $i++;
+			  }
+
+
 
 
 
@@ -683,19 +690,148 @@ else if (($s == "baru") OR ($s == "edit"))
 		</p>
 		
 		
-		</form>';
+		</form>
+
+	
+	</div>
+	
+	<div class="col-md-6">';
+	?>
+	
+
+		
+	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>  
+	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>  
 	
 	
-	
-		?>
+		<style type="text/css">
+		.thumb-image{
+		 float:left;
+		 width:150px;
+		 height:150px;
+		 position:relative;
+		 padding:5px;
+		}
+		</style>
+		
+		
+		
+		
+			<table border="0" cellspacing="0" cellpadding="3">
+			<tr valign="top">
+			<td width="100">
+				<div id="image-holder"></div>
+			</td>
 			
+	
+			</tr>
+			</table>
 		
+		<script>
+		$(document).ready(function() {
+			
+			
+		        $("#image_upload").on('change', function() {
+		          //Get count of selected files
+		          var countFiles = $(this)[0].files.length;
+		          var imgPath = $(this)[0].value;
+		          var extn = imgPath.substring(imgPath.lastIndexOf('.') + 1).toLowerCase();
+		          var image_holder = $("#image-holder");
+		          image_holder.empty();
+		          if (extn == "gif" || extn == "png" || extn == "jpg" || extn == "jpeg") {
+		            if (typeof(FileReader) != "undefined") {
+		              //loop for each file selected for uploaded.
+		              for (var i = 0; i < countFiles; i++) 
+		              {
+		                var reader = new FileReader();
+		                reader.onload = function(e) {
+		                  $("<img />", {
+		                    "src": e.target.result,
+		                    "class": "thumb-image"
+		                  }).appendTo(image_holder);
+		                }
+		                image_holder.show();
+		                reader.readAsDataURL($(this)[0].files[i]);
+		              }
+		              
 		
+			    
+		            } else {
+		              alert("This browser does not support FileReader.");
+		            }
+		          } else {
+		            alert("Pls select only images");
+		          }
+		        });
+		        
+		        
+	
+	
+		        
+		        
+		        
+		      });
+		</script>
+	
+		<?php
+		echo '<div id="loading" style="display:none">
+		<img src="'.$sumber.'/template/img/progress-bar.gif" width="100" height="16">
 		</div>
 		
 		
-	</div>
+	   <form method="post" id="upload_image" enctype="multipart/form-data">
+		<input type="file" name="image_upload" id="image_upload" class="btn btn-warning" />
+	
+	   </form>
+	   
+	   <hr>';
+		
+		?>
+		
+		
+		<script>  
+		$(document).ready(function(){
+			
+			
+			
+		       $('#image-holder').load("<?php echo $sumber;?>/adm/m/i_siswa.php?aksi=lihat1&kd=<?php echo $kd;?>");
+	
+		
+		
+		        
+		    $('#upload_image').on('change', function(event){
+		     event.preventDefault();
+		     
+				$('#loading').show();
+		
+		
+			
+			     $.ajax({
+			      url:"i_siswa_upload.php?kd=<?php echo $kd;?>",
+			      method:"POST",
+			      data:new FormData(this),
+			      contentType:false,
+			      cache:false,
+			      processData:false,
+			      success:function(data){
+					$('#loading').hide();
+			       $('#preview').load("<?php echo $sumber;?>/adm/m/i_siswa.php?aksi=lihat&kd=<?php echo $kd;?>");
+			       	
+			      }
+			     })
+			    });
+			    
+			    
+		});  
+		</script>
+	
+	
 
+
+		</div>
+	
+	</div>
+	
 
 	<?php
 	}
@@ -819,6 +955,7 @@ else
 			$i_kodex = md5($i_kode);
 	
 
+			/*
 			//jika null, kasi kode
 			if (empty($i_kode))
 				{
@@ -830,7 +967,7 @@ else
 										"qrcode = '$kodenya' ".
 										"WHERE kd = '$i_kd'");
 				}
-				
+			*/
 				
 				
 				
@@ -877,7 +1014,7 @@ else
 			'.$i_nama.'
 			
 			<hr>
-			<a href="siswa_qrcode.php?kd='.$i_kd.'" target="_blank" class="btn btn-danger">PRINT QRCODE >></a>			
+			<a href="siswa_qrcode.php?kd='.$i_kd.'&kode='.$i_kode.'" target="_blank" class="btn btn-danger">PRINT QRCODE >></a>			
 			<hr>
 			<a href="'.$filenya.'?s=reset&kd='.$i_kd.'" class="btn btn-primary">RESET PASSWORD >></a>
 					

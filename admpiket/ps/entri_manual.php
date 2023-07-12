@@ -36,9 +36,9 @@ $tpl = LoadTpl("../../template/admpiket.html");
 nocache;
 
 //nilai
-$filenya = "entri.php";
-$judul = "[PRESENSI]. Entri Kehadiran";
-$judulku = "[PRESENSI]. Entri Kehadiran";
+$filenya = "entri_manual.php";
+$judul = "[PRESENSI]. Entri Manual Kehadiran";
+$judulku = "[PRESENSI]. Entri Manual Kehadiran";
 $judulx = $judul;
 $artkd = nosql($_REQUEST['artkd']);
 $kd = nosql($_REQUEST['kd']);
@@ -53,6 +53,8 @@ if ((empty($page)) OR ($page == "0"))
 	
 	
 
+
+$diload = "document.formxx.e_kode.focus();";
 
 //PROSES ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //nek batal
@@ -81,6 +83,36 @@ if ($_POST['btnCARI'])
 	}
 
 
+
+//jika simpan
+if ($_POST['btnSMP'])
+	{
+	//nilai
+	$e_kode = cegah($_POST['e_kode']);
+
+	
+	
+	//detail e
+	$qyuk = mysqli_query($koneksi, "SELECT * FROM m_user ".
+										"WHERE kode = '$e_kode' ".
+										"OR kd = '$e_kode'");
+	$ryuk = mysqli_fetch_assoc($qyuk);
+	$yuk_kd = cegah($ryuk['kd']);
+	$yuk_nama = cegah($ryuk['nama']);
+	$yuk_jabatan = cegah($ryuk['jabatan']);
+	$yuk_kelas = cegah($ryuk['kelas']);
+	$yuk_tapel = cegah($ryuk['tapel']);
+	
+	
+	
+	
+	
+
+	//re-direct
+	$ke = "$filenya?artkd=$yuk_kd";
+	xloc($ke);
+	exit();
+	}
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -123,52 +155,18 @@ echo '<div class="row">
             </div>
             
             <div class="card-body">';
-            ?>
-            
-            	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	
-				<script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
-				
-				
-				
-				<video id="preview" width="100%" height="100%"></video>
-				
-				<script type="text/javascript">
-				
-				  let scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
-				
-				  scanner.addListener('scan', function (content) {
-				
-				    //alert(content);
-				    window.location.href = "<?php echo $filenya;?>?artkd="+content; 
-				
-				  });
-				
-				  Instascan.Camera.getCameras().then(function (cameras) {
-				
-				    if (cameras.length > 0) {
-				
-				      scanner.start(cameras[0]);
-				
-				    } else {
-				
-				      console.error('No cameras found.');
-				
-				    }
-				
-				  }).catch(function (e) {
-				
-				    console.error(e);
-				
-				  });
-				
-				</script>
-				
+			
+			echo '<form action="'.$filenya.'" method="post" name="formxx">
+			<p>
+			NIS/NIP : 
+			<input name="e_kode" type="text" value="'.$e_kode.'" size="10" class="btn btn-warning" required>
+			<input name="btnSMP" type="submit" value="SIMPAN >>" class="btn btn-danger">
+			</p>
+			<hr>
+			
+			</form>';
+						
 
-        
-        
-		
-			<?php		    
             echo '</div>
         </div>';
 	?>
@@ -226,6 +224,8 @@ echo '<div class="row">
 						$yuk_kelasx = balikin($ryuk['kelas']);
 						$yuk_tapel = cegah($ryuk['tapel']);
 						
+						$e_kode = $yuk_kode;
+			
 						
 						
 						
@@ -316,7 +316,7 @@ echo '<div class="row">
 							mysqli_query($koneksi, "UPDATE m_siswa SET jml_presensi = '$tyuk_subtotal' ".
 														"WHERE tapel = '$yuk_tapel' ".
 														"AND kode = '$e_kode'");
-
+														
 							$yuk_ket = "NIS : $yuk_kodex. Kelas : $yuk_kelasx";
 							$yuk_ket1 = "NIS : $yuk_kodex";
 							$yuk_ket2 = "Kelas : $yuk_kelasx";
@@ -325,12 +325,12 @@ echo '<div class="row">
 							$nil_foto1 = "$sumber/img/user_thumb.png";
 							}	
 							
-						else 
+						else
 							{
 							//update kan
 							mysqli_query($koneksi, "UPDATE m_guru SET jml_presensi = '$tyuk_subtotal' ".
 														"WHERE kode = '$e_kode'");
-																					
+														
 							$yuk_ket = "NIP : $yuk_kodex";
 							$yuk_ket1 = "NIP : $yuk_kodex";
 							$yuk_ket2 = "";
@@ -341,7 +341,7 @@ echo '<div class="row">
 							}
 
 	
-	
+
 						echo '<div class="card card-primary card-outline">
 			              <div class="card-body box-profile">
 			                <div class="text-center">

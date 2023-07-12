@@ -1,8 +1,8 @@
 <?php
 ///////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////
-/////// SISFOKOL_SMP_v6.78_(Code:Tekniknih)                     ///////
-/////// (Sistem Informasi Sekolah untuk SMP)                    ///////
+/////// SISFOKOL_SMA_v6.78_(Code:Tekniknih)                     ///////
+/////// (Sistem Informasi Sekolah untuk SMA)                    ///////
 ///////////////////////////////////////////////////////////////////////
 /////// Dibuat oleh :                                           ///////
 /////// Agus Muhajir, S.Kom                                     ///////
@@ -37,8 +37,8 @@ nocache;
 
 //nilai
 $filenya = "presensi.php";
-$judul = "[PRESENSI]. Entri Presensi Harian";
-$judulku = "[PRESENSI]. Entri Presensi Harian";
+$judul = "[PRESENSI]. Entri Kehadiran";
+$judulku = "[PRESENSI]. Entri Kehadiran";
 $judulx = $judul;
 $artkd = nosql($_REQUEST['artkd']);
 $kd = nosql($_REQUEST['kd']);
@@ -459,30 +459,68 @@ echo '<div class="row">
 							mysqli_query($koneksi, "UPDATE m_siswa SET jml_presensi = '$tyuk_subtotal' ".
 														"WHERE tapel = '$yuk_tapel' ".
 														"AND kode = '$e_kode'");
-														
-														
-														
-							$yuk_ket = "NIS:$yuk_kodex. Kelas:$yuk_kelasx";
+
+							$yuk_ket = "NIS : $yuk_kodex. Kelas : $yuk_kelasx";
+							$yuk_ket1 = "NIS : $yuk_kodex";
+							$yuk_ket2 = "Kelas : $yuk_kelasx";
+							
+							$i_filex1 = "$artkd-1.jpg";
+							$nil_foto1 = "$sumber/img/user_thumb.png";
 							}	
 							
-						else if ($yuk_jabatan == "GURU")
+						else 
 							{
 							//update kan
 							mysqli_query($koneksi, "UPDATE m_guru SET jml_presensi = '$tyuk_subtotal' ".
 														"WHERE kode = '$e_kode'");
-														
-							$yuk_ket = "NIP:$yuk_kodex";
+																					
+							$yuk_ket = "NIP : $yuk_kodex";
+							$yuk_ket1 = "NIP : $yuk_kodex";
+							$yuk_ket2 = "";
+							
+							
+							$i_filex1 = "$artkd-1.jpg";
+							$nil_foto1 = "$sumber/filebox/pegawai/$artkd/$i_filex1";
 							}
 
 	
 	
-						echo "<p>
-						[$today].
-						<br>
-						Selamat Datang, $yuk_namax.
-						<hr> 
-						$yuk_jabatanx. $yuk_ket.
-						</p>";
+						echo '<div class="card card-primary card-outline">
+			              <div class="card-body box-profile">
+			                <div class="text-center">
+			                  <img class="profile-user-img img-fluid img-circle"
+			                       src="'.$nil_foto1.'"
+			                       alt="'.$yuk_namax.'">
+			                </div>
+			
+			                <h3 class="profile-username text-center">'.$yuk_namax.'</h3>
+			
+			                <p class="text-muted text-center">'.$yuk_jabatanx.'</p>
+			
+			                <ul class="list-group list-group-unbordered mb-3">
+			                  <li class="list-group-item">
+			                    <b>'.$yuk_ket1.'</b> <a class="float-right"><b>'.$yuk_ket2.'</b></a>
+			                  </li>
+			                </ul>
+			                
+			                
+							<div class="info-box bg-warning">
+				              <span class="info-box-icon"><i class="fa fa-calendar-check-o"></i></span>
+				
+				              <div class="info-box-content">
+				                <span class="info-box-number">'.$today.'</span>
+				
+				                <div class="progress">
+				                  <div class="progress-bar" style="width: 100%"></div>
+				                </div>
+				                <span class="progress-description">
+				                  Presensi Kehadiran Masuk Hari Ini..
+				                </span>
+				              </div>
+				            </div>
+
+			              </div>
+			            </div>';
 						}
 					else
 						{

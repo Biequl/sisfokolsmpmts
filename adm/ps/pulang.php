@@ -29,16 +29,16 @@ session_start();
 require("../../inc/config.php");
 require("../../inc/fungsi.php");
 require("../../inc/koneksi.php");
-require("../../inc/cek/admpiket.php");
+require("../../inc/cek/adm.php");
 require("../../inc/class/paging.php");
-$tpl = LoadTpl("../../template/admpiket.html");
+$tpl = LoadTpl("../../template/adm.html");
 
 nocache;
 
 //nilai
-$filenya = "entri.php";
-$judul = "[PRESENSI]. Entri Kehadiran";
-$judulku = "[PRESENSI]. Entri Kehadiran";
+$filenya = "pulang.php";
+$judul = "[PRESENSI]. Entri Pulang";
+$judulku = "[PRESENSI]. Entri Pulang";
 $judulx = $judul;
 $artkd = nosql($_REQUEST['artkd']);
 $kd = nosql($_REQUEST['kd']);
@@ -79,6 +79,7 @@ if ($_POST['btnCARI'])
 	xloc($ke);
 	exit();
 	}
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -232,8 +233,8 @@ echo '<div class="row">
 						//waktu
 						$qyuk2 = mysqli_query($koneksi, "SELECT * FROM m_waktu");
 						$ryuk2 = mysqli_fetch_assoc($qyuk2);
-						$yuk2_mjam = balikin($ryuk2['masuk_jam']);
-						$yuk2_mmenit = balikin($ryuk2['masuk_menit']);
+						$yuk2_mjam = balikin($ryuk2['pulang_jam']);
+						$yuk2_mmenit = balikin($ryuk2['pulang_menit']);
 						
 						
 						
@@ -244,140 +245,108 @@ echo '<div class="row">
 						$waktu_akhir = strtotime("$tahun-$bulan-$tanggal $jam:$menit:$detik"); // bisa juga waktu sekarang now()
 					        
 					
-					    //jika memang terlambat
-					    if ($waktu_awal < $waktu_akhir)
+					    //jika belum saatnya pulang
+					    if ($waktu_awal > $waktu_akhir)
 							{
-							//menghitung selisih dengan hasil detik
-							$diffnya = $waktu_akhir - $waktu_awal;
-							
-							//membagi detik menjadi jam
-							$jamnya = floor($diffnya / (60 * 60));
-							
-							//membagi sisa detik setelah dikurangi $jam menjadi menit
-							$menitnya = $diffnya - $jamnya * (60 * 60);
-							
-							//menampilkan / print hasil
-							//echo 'Hasilnya adalah '.number_format($diff,0,",",".").' detik<br /><br />';
-							//echo 'Sehingga Anda memiliki sisa waktu promosi selama: ' . $jamnya .  ' jam dan ' . floor( $menitnya / 60 ) . ' menit';
-							
-							$menitnya2 = floor($menitnya / 60);
-							
-							$nilku = "$jamnya Jam, $menitnya2 Menit";
+							echo '<h3>Belum Saatnya Pulang</h3>';
 							}
 							
 						else
 							{
-							$nilku = "-";
-							$jamnya = "0";
-							$menitnya2 = "0";
-							}
-						
-						
-						
-						
-												
-						//kd
-						$xyz = md5("$tahun:$bulan:$tanggal:$e_kode:MASUK");
-						
-						
-						//jika ada
-						if (!empty($yuk_kd))
-							{
-							//insert
-							mysqli_query($koneksi, "INSERT INTO user_presensi(kd, user_kd, user_kode, ".
-														"user_nama, user_jabatan, user_tapel, user_kelas, ".
-														"tanggal, postdate, status, ".
-														"ket, telat_ket, telat_jam, telat_menit) VALUES ".
-														"('$xyz', '$yuk_kd', '$e_kode', ".
-														"'$yuk_nama', '$yuk_jabatan', '$yuk_tapel', '$yuk_kelas', ".
-														"'$today', '$today', 'MASUK', ".
-														"'-', '$nilku', '$jamnya', '$menitnya2')");
-							}	
-						
-						
-						
-						
-						
-						
-										
-					
-						//total point nya
-						$qyuk = mysqli_query($koneksi, "SELECT kd FROM user_presensi ".
-															"WHERE user_kd = '$yuk_kd'");
-						$ryuk = mysqli_fetch_assoc($qyuk);
-						$tyuk_subtotal = mysqli_num_rows($qyuk);
-					
-						
-					
-						//jika siswa
-						if ($yuk_jabatan == "SISWA")
-							{
-							//update kan
-							mysqli_query($koneksi, "UPDATE m_siswa SET jml_presensi = '$tyuk_subtotal' ".
-														"WHERE tapel = '$yuk_tapel' ".
-														"AND kode = '$e_kode'");
-
-							$yuk_ket = "NIS : $yuk_kodex. Kelas : $yuk_kelasx";
-							$yuk_ket1 = "NIS : $yuk_kodex";
-							$yuk_ket2 = "Kelas : $yuk_kelasx";
-							
-							$i_filex1 = "$artkd-1.jpg";
-							$nil_foto1 = "$sumber/img/user_thumb.png";
-							}	
-							
-						else 
-							{
-							//update kan
-							mysqli_query($koneksi, "UPDATE m_guru SET jml_presensi = '$tyuk_subtotal' ".
-														"WHERE kode = '$e_kode'");
-																					
-							$yuk_ket = "NIP : $yuk_kodex";
-							$yuk_ket1 = "NIP : $yuk_kodex";
-							$yuk_ket2 = "";
+							//kd
+							$xyz = md5("$tahun:$bulan:$tanggal:$e_kode:PULANG");
 							
 							
-							$i_filex1 = "$artkd-1.jpg";
-							$nil_foto1 = "$sumber/filebox/pegawai/$artkd/$i_filex1";
-							}
-
+							//jika ada
+							if (!empty($yuk_kd))
+								{
+								//insert
+								mysqli_query($koneksi, "INSERT INTO user_presensi(kd, user_kd, user_kode, ".
+															"user_nama, user_jabatan, user_tapel, user_kelas, ".
+															"tanggal, postdate, status, ".
+															"ket, telat_ket, telat_jam, telat_menit) VALUES ".
+															"('$xyz', '$yuk_kd', '$e_kode', ".
+															"'$yuk_nama', '$yuk_jabatan', '$yuk_tapel', '$yuk_kelas', ".
+															"'$today', '$today', 'PULANG', ".
+															"'-', '$nilku', '$jamnya', '$menitnya2')");
+								}	
+							
+							
+							
+							
+							
+							
+											
+						
+							//total point nya
+							$qyuk = mysqli_query($koneksi, "SELECT kd FROM user_presensi ".
+																"WHERE user_kd = '$yuk_kd'");
+							$ryuk = mysqli_fetch_assoc($qyuk);
+							$tyuk_subtotal = mysqli_num_rows($qyuk);
+						
+							
+						
+							//jika siswa
+							if ($yuk_jabatan == "SISWA")
+								{
+								$yuk_ket = "NIS : $yuk_kodex. Kelas : $yuk_kelasx";
+								$yuk_ket1 = "NIS : $yuk_kodex";
+								$yuk_ket2 = "Kelas : $yuk_kelasx";
+								
+								$i_filex1 = "$artkd-1.jpg";
+								$nil_foto1 = "$sumber/img/user_thumb.png";
+								}	
+								
+							else
+								{
+								$yuk_ket = "NIP : $yuk_kodex";
+								$yuk_ket1 = "NIP : $yuk_kodex";
+								$yuk_ket2 = "";
+								
+								
+								$i_filex1 = "$artkd-1.jpg";
+								$nil_foto1 = "$sumber/filebox/pegawai/$artkd/$i_filex1";
+								}
 	
+		
 	
-						echo '<div class="card card-primary card-outline">
-			              <div class="card-body box-profile">
-			                <div class="text-center">
-			                  <img class="profile-user-img img-fluid img-circle"
-			                       src="'.$nil_foto1.'"
-			                       alt="'.$yuk_namax.'">
-			                </div>
-			
-			                <h3 class="profile-username text-center">'.$yuk_namax.'</h3>
-			
-			                <p class="text-muted text-center">'.$yuk_jabatanx.'</p>
-			
-			                <ul class="list-group list-group-unbordered mb-3">
-			                  <li class="list-group-item">
-			                    <b>'.$yuk_ket1.'</b> <a class="float-right"><b>'.$yuk_ket2.'</b></a>
-			                  </li>
-			                </ul>
-			                
-			                
-							<div class="info-box bg-warning">
-				              <span class="info-box-icon"><i class="fa fa-calendar-check-o"></i></span>
-				
-				              <div class="info-box-content">
-				                <span class="info-box-number">'.$today.'</span>
-				
-				                <div class="progress">
-				                  <div class="progress-bar" style="width: 100%"></div>
+							echo '<div class="card card-primary card-outline">
+				              <div class="card-body box-profile">
+				                <div class="text-center">
+				                  <img class="profile-user-img img-fluid img-circle"
+				                       src="'.$nil_foto1.'"
+				                       alt="'.$yuk_namax.'">
 				                </div>
-				                <span class="progress-description">
-				                  Presensi Kehadiran Masuk Hari Ini..
-				                </span>
+				
+				                <h3 class="profile-username text-center">'.$yuk_namax.'</h3>
+				
+				                <p class="text-muted text-center">'.$yuk_jabatanx.'</p>
+				
+				                <ul class="list-group list-group-unbordered mb-3">
+				                  <li class="list-group-item">
+				                    <b>'.$yuk_ket1.'</b> <a class="float-right"><b>'.$yuk_ket2.'</b></a>
+				                  </li>
+				                </ul>
+				                
+				                
+								<div class="info-box bg-primary">
+					              <span class="info-box-icon"><i class="fa fa-calendar-check-o"></i></span>
+					
+					              <div class="info-box-content">
+					                <span class="info-box-number">'.$today.'</span>
+					
+					                <div class="progress">
+					                  <div class="progress-bar" style="width: 100%"></div>
+					                </div>
+					                <span class="progress-description">
+					                  Presensi Pulang Hari Ini..
+					                </span>
+					              </div>
+					            </div>
+	
 				              </div>
-				            </div>
-
-			              </div>
-			            </div>';
+				            </div>';
+							}
 						}
 					else
 						{

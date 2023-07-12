@@ -1,8 +1,8 @@
 <?php
 ///////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////
-/////// SISFOKOL_SMP_v6.78_(Code:Tekniknih)                     ///////
-/////// (Sistem Informasi Sekolah untuk SMP)                    ///////
+/////// SISFOKOL_SMA_v6.78_(Code:Tekniknih)                     ///////
+/////// (Sistem Informasi Sekolah untuk SMA)                    ///////
 ///////////////////////////////////////////////////////////////////////
 /////// Dibuat oleh :                                           ///////
 /////// Agus Muhajir, S.Kom                                     ///////
@@ -38,6 +38,7 @@ $judul = "Data siswa";
 $judulku = "$judul";
 $judulx = $judul;
 $kd = nosql($_REQUEST['kd']);
+$kode = cegah($_REQUEST['kode']);
 
 	
 	
@@ -52,7 +53,7 @@ include('../../inc/class/phpqrcode/qrconfig.php');
 //$tempDir = EXAMPLE_TMP_SERVERPATH;
 $tempDir = "../../filebox/qrcode/";
 
-$codeContents = $kd;
+$codeContents = $kode;
 
 // we need to generate filename somehow, 
 // with md5 or with database ID used to obtains $codeContents...
@@ -76,7 +77,7 @@ if (!file_exists($pngAbsoluteFilePath)) {
 	
 
 //re-direct
-$ke = "siswa_pdf.php?kd=$kd";
+$ke = "siswa_pdf.php?kd=$kd&kode=$kode";
 xloc($ke);
 exit();
 ?>
