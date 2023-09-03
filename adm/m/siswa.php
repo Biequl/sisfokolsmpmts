@@ -150,6 +150,7 @@ if ($_POST['btnIMX'])
 				      $i_nourut = cegah($sheet['D']);
 				      $i_kode = cegah($sheet['E']);
 				      $i_nama = cegah($sheet['F']);
+				      $i_nowa = cegah($sheet['G']);
 
 
 				      
@@ -183,18 +184,18 @@ if ($_POST['btnIMX'])
 							{
 							//insert
 							mysqli_query($koneksi, "INSERT INTO m_siswa(kd, tapel, kelas, ".
-														"nourut, kode, nama, qrcode, postdate) VALUES ".
+														"nourut, kode, nama, qrcode, nowa, postdate) VALUES ".
 														"('$i_kodex', '$i_tapel', '$i_kelas', ".
-														"'$i_nourut', '$i_kode', '$i_nama', '$i_qrcode', '$today')");
+														"'$i_nourut', '$i_kode', '$i_nama', '$i_qrcode', '$i_nowa', '$today')");
 														
 																												
 							
 							//insert
 							mysqli_query($koneksi, "INSERT INTO m_user(kd, usernamex, passwordx, ".
-														"kode, nama, jabatan, ".
+														"kode, nama, jabatan, nowa, ".
 														"tapel, kelas, postdate) VALUES ".
 														"('$i_kodex', '$i_kode', '$i_kodex', ".
-														"'$i_kode', '$i_nama', 'SISWA', ".
+														"'$i_kode', '$i_nama', 'SISWA', '$i_nowa', ".
 														"'$i_tapel', '$i_kelas', '$today')");
 														
 							}
@@ -276,6 +277,7 @@ if ($_POST['btnEX'])
 	$worksheet1->write_string(0,3,"NOURUT");
 	$worksheet1->write_string(0,4,"NIS");
 	$worksheet1->write_string(0,5,"NAMA");
+	$worksheet1->write_string(0,6,"NOWA");
 
 
 
@@ -295,6 +297,7 @@ if ($_POST['btnEX'])
 		$dt_nourut = balikin($rdt['nourut']);
 		$dt_nip = balikin($rdt['kode']);
 		$dt_nama = balikin($rdt['nama']);
+		$dt_nowa = balikin($rdt['nowa']);
 
 
 
@@ -305,6 +308,7 @@ if ($_POST['btnEX'])
 		$worksheet1->write_string($dt_nox,3,$dt_nourut);
 		$worksheet1->write_string($dt_nox,4,$dt_nip);
 		$worksheet1->write_string($dt_nox,5,$dt_nama);
+		$worksheet1->write_string($dt_nox,6,$dt_nowa);
 		}
 	while ($rdt = mysqli_fetch_assoc($qdt));
 
@@ -384,6 +388,7 @@ if ($_POST['btnSMP'])
 	$e_nourut = cegah($_POST['e_nourut']);
 	$e_nip = cegah($_POST['e_nip']);
 	$e_nama = cegah($_POST['e_nama']);
+	$e_nowa = cegah($_POST['e_nowa']);
 
 
 
@@ -414,6 +419,7 @@ if ($_POST['btnSMP'])
 										"kelas = '$e_kelas', ".
 										"nourut = '$e_nourut', ".
 										"kode = '$e_nip', ".
+										"nowa = '$e_nowa', ".
 										"nama = '$e_nama' ".
 										"WHERE kd = '$kd'");
 
@@ -446,18 +452,18 @@ if ($_POST['btnSMP'])
 			else
 				{
 				mysqli_query($koneksi, "INSERT INTO m_siswa(kd, tapel, kelas, ".
-										"nourut, kode, nama, qrcode, postdate) VALUES ".
+										"nourut, kode, nama, qrcode, nowa, postdate) VALUES ".
 										"('$e_kd', '$e_tapel', '$e_kelas', ".
-										"'$e_nourut', '$e_nip', '$e_nama', '$e_qrcode', '$today')");
+										"'$e_nourut', '$e_nip', '$e_nama', '$e_qrcode', '$e_nowa', '$today')");
 
 
 				
 				//insert
 				mysqli_query($koneksi, "INSERT INTO m_user(kd, usernamex, passwordx, ".
-											"kode, nama, jabatan, ".
+											"kode, nama, jabatan, nowa, ".
 											"tapel, kelas, postdate) VALUES ".
 											"('$e_kd', '$e_nip', '$e_nipx', ".
-											"'$e_nip', '$e_nama', 'SISWA', ".
+											"'$e_nip', '$e_nama', 'SISWA', '$e_nowa', ".
 											"'$e_tapel', '$e_kelas', '$today')");
 
 
@@ -600,6 +606,7 @@ else if (($s == "baru") OR ($s == "edit"))
 	$e_nourut = balikin($rowx['nourut']);
 	$e_nip = balikin($rowx['kode']);
 	$e_nama = balikin($rowx['nama']);
+	$e_nowa = balikin($rowx['nowa']);
 	?>
 	
 	
@@ -678,6 +685,14 @@ else if (($s == "baru") OR ($s == "edit"))
 		<input name="e_nama" type="text" value="'.$e_nama.'" size="30" class="btn btn-warning" required>
 		</p>
 		
+		
+		
+		
+		<p>
+		No.WA : 
+		<br>
+		+62<input name="e_nowa" type="text" value="'.$e_nowa.'" size="20" class="btn btn-warning" required>
+		</p>
 		
 		<p>
 		<input name="jml" type="hidden" value="'.$count.'">
@@ -866,6 +881,7 @@ else
 		$sqlcount = "SELECT * FROM m_siswa ".
 						"WHERE kode LIKE '%$kunci%' ".
 						"OR nama LIKE '%$kunci%' ".
+						"OR nowa LIKE '%$kunci%' ".
 						"ORDER BY tapel DESC, ".
 						"kelas ASC, ".
 						"round(nourut) ASC";
@@ -919,6 +935,7 @@ else
 	<td width="50"><strong><font color="'.$warnatext.'">NoURUT</font></strong></td>
 	<td width="50"><strong><font color="'.$warnatext.'">NIS/USERNAME</font></strong></td>
 	<td><strong><font color="'.$warnatext.'">NAMA</font></strong></td>
+	<td width="200"><strong><font color="'.$warnatext.'">NOWA</font></strong></td>
 	</tr>
 	</thead>
 	<tbody>';
@@ -947,6 +964,7 @@ else
 			$i_kelasx = cegah($data['kelas']);
 			$i_kode = balikin($data['kode']);
 			$i_nourut = balikin($data['nourut']);
+			$i_nowa = balikin($data['nowa']);
 			$i_nama = balikin($data['nama']);
 			$i_namax = cegah($data['nama']);
 			$i_qrcode = balikin($data['qrcode']);
@@ -989,10 +1007,10 @@ else
 		
 			//insert
 			mysqli_query($koneksi, "INSERT INTO m_user(kd, usernamex, passwordx, ".
-										"kode, nama, jabatan, ".
+										"kode, nama, jabatan, nowa, ".
 										"tapel, kelas, qrcode, postdate) VALUES ".
 										"('$i_kodex', '$i_kode', '$i_kodex', ".
-										"'$i_kode', '$i_namax', 'SISWA', ".
+										"'$i_kode', '$i_namax', 'SISWA', '$i_nowa', ".
 										"'$i_tapelx', '$i_kelasx', '$i_qrcode', '$today')");
 	
 	
@@ -1019,6 +1037,7 @@ else
 			<a href="'.$filenya.'?s=reset&kd='.$i_kd.'" class="btn btn-primary">RESET PASSWORD >></a>
 					
 			</td>
+			<td>+62'.$i_nowa.'</td>
 	        </tr>';
 			}
 		while ($data = mysqli_fetch_assoc($result));

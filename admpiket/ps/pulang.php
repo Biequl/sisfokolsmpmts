@@ -226,6 +226,7 @@ echo '<div class="row">
 						$yuk_kelas = cegah($ryuk['kelas']);
 						$yuk_kelasx = balikin($ryuk['kelas']);
 						$yuk_tapel = cegah($ryuk['tapel']);
+						$yuk_nowa = cegah($ryuk['nowa']);
 						
 						
 						
@@ -255,25 +256,7 @@ echo '<div class="row">
 							{
 							//kd
 							$xyz = md5("$tahun:$bulan:$tanggal:$e_kode:PULANG");
-							
-							
-							//jika ada
-							if (!empty($yuk_kd))
-								{
-								//insert
-								mysqli_query($koneksi, "INSERT INTO user_presensi(kd, user_kd, user_kode, ".
-															"user_nama, user_jabatan, user_tapel, user_kelas, ".
-															"tanggal, postdate, status, ".
-															"ket, telat_ket, telat_jam, telat_menit) VALUES ".
-															"('$xyz', '$yuk_kd', '$e_kode', ".
-															"'$yuk_nama', '$yuk_jabatan', '$yuk_tapel', '$yuk_kelas', ".
-															"'$today', '$today', 'PULANG', ".
-															"'-', '$nilku', '$jamnya', '$menitnya2')");
-								}	
-							
-							
-							
-							
+	
 							
 							
 											
@@ -308,6 +291,36 @@ echo '<div class="row">
 								$nil_foto1 = "$sumber/filebox/pegawai/$artkd/$i_filex1";
 								}
 	
+	
+							
+							
+							//jika ada
+							if (!empty($yuk_kd))
+								{
+								//insert
+								mysqli_query($koneksi, "INSERT INTO user_presensi(kd, user_kd, user_kode, ".
+															"user_nama, user_jabatan, user_tapel, user_kelas, ".
+															"tanggal, postdate, status, ".
+															"ket, telat_ket, telat_jam, telat_menit) VALUES ".
+															"('$xyz', '$yuk_kd', '$e_kode', ".
+															"'$yuk_nama', '$yuk_jabatan', '$yuk_tapel', '$yuk_kelas', ".
+															"'$today', '$today', 'PULANG', ".
+															"'-', '$nilku', '$jamnya', '$menitnya2')");
+															
+																													
+								//kirim wa
+								$pesannya = "$today
+PRESENSI PULANG
+$yuk_jabatanx. $yuk_ket1. $yuk_ket2";
+	
+								$nowanya = $yuk_nowa;
+								
+								require("i_kirim_wa.php");																
+								}	
+							
+							
+							
+							
 		
 	
 							echo '<div class="card card-primary card-outline">
