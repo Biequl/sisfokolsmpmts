@@ -423,6 +423,16 @@ if ($_POST['btnSMP'])
 										"nama = '$e_nama' ".
 										"WHERE kd = '$kd'");
 
+
+			//update..
+			mysqli_query($koneksi, "UPDATE m_user SET tapel = '$e_tapel', ".
+										"kelas = '$e_kelas', ".
+										"nowa = '$e_nowa', ".
+										"nama = '$e_nama' ".
+										"WHERE kode = '$e_nip'");
+
+
+
 			//re-direct
 			xloc($filenya);
 			exit();
