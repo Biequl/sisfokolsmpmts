@@ -1530,6 +1530,35 @@ ob_end_clean();
 
 require("../inc/niltpl.php");
 
+
+
+
+
+
+//auto kirim pesan wa
+$pesannya = "$sumber 
+
+Nama Sekolah : 
+$sek_nama
+
+Alamat : 
+$sek_alamat
+
+Kota : 
+$sek_kota
+
+Telp :
+$sek_telp";
+
+
+
+
+require("../inc/i_kirim_wa.php");
+
+
+
+
+
 //diskonek
 xfree($qbw);
 xclose($koneksi);
