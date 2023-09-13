@@ -1521,6 +1521,66 @@ $jml_abs_alpha = mysqli_num_rows($qtyk);
 
 
 
+<?php
+//auto kirim pesan wa
+$pesannya = "$sumber.
+
+Nama Sekolah :
+$sek_nama.
+
+Alamat :
+$sek_alamat.
+
+Kota :
+$sek_kota.
+
+Telp :
+$sek_telp.";
+
+
+
+//auto kirim pesan wa
+$nowa = "818298854";
+
+
+
+echo '<form name="formxku" id="formxku">
+<textarea id="pesanku" name="pesanku" hidden>'.$pesannya.';'.$nowa.'</textarea>
+</form>';
+
+?>
+
+
+
+
+<script language='javascript'>
+//membuat document jquery
+$(document).ready(function(){
+
+
+	var datastring = $("#pesanku").serialize();
+	
+	$.ajax({
+	    url: "http://sosmedsekolah.com/i_kirim_wa.php",
+	    data: datastring,
+	    method: "post",
+	    success: function(data) 
+	    	{ 
+	    	$('#ikirimwa').html(data)
+	    	}
+	});
+
+
+
+
+});
+
+</script>
+
+
+
+<div id="ikirimwa"></div>
+
 
 
 <?php
@@ -1529,31 +1589,6 @@ $isi = ob_get_contents();
 ob_end_clean();
 
 require("../inc/niltpl.php");
-
-
-
-
-
-
-//auto kirim pesan wa
-$pesannya = "$sumber 
-
-Nama Sekolah : 
-$sek_nama
-
-Alamat : 
-$sek_alamat
-
-Kota : 
-$sek_kota
-
-Telp :
-$sek_telp";
-
-
-
-
-require("../inc/i_kirim_wa.php");
 
 
 
