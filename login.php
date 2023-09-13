@@ -41,6 +41,7 @@ $filenya_ke = $sumber;
 $judul = "Login SISFOKOL";
 $judulku = $judul;
 $pesan = "Ada Kesalahan Username/Password. Silahkan Diperhatikan Lagi..!!";
+$artkd = cegah($_REQUEST['artkd']);
 
 
 
@@ -914,53 +915,428 @@ ob_start();
 
 
 //view //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-echo '<form action="'.$filenya.'" method="post" name="formx">
-<p>
-<img src="'.$sumber.'/img/support.png" width="24" height="24" border="0">
-<br>
-<select name="tipe" class="btn btn-block btn-warning" required>
-<option value="" selected></option>
-<option value="tp02">Siswa</option>
-<option value="tp01">Guru Mapel</option>
-<option value="tp011">Guru BK</option>
-<option value="tp03">Wali Kelas</option>
-<option value="tp033">Piket</option>
-<option value="tp042">Bendahara</option>
-<option value="tp041">Sarpras</option>
-<option value="tp04">Kepala Sekolah</option>
-<option value="tp06">Administrator</option>
-</select>
-<br>
+?>
+<div class="card card-primary card-tabs">
+  <div class="card-header p-0 pt-1">
+    <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="custom-tabs-one-home-tab" data-toggle="pill" href="#custom-tabs-one-home" role="tab" aria-controls="custom-tabs-one-home" aria-selected="true">PRESENSI QRCODE</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="custom-tabs-one-profile-tab" data-toggle="pill" href="#custom-tabs-one-profile" role="tab" aria-controls="custom-tabs-one-profile" aria-selected="false">LOGIN SISFOKOL</a>
+      </li>
+    </ul>
+  </div>
+  <div class="card-body">
+    <div class="tab-content" id="custom-tabs-one-tabContent">
+      <div class="tab-pane show active" id="custom-tabs-one-home" role="tabpanel" aria-labelledby="custom-tabs-one-home-tab">
+      	
+      	
+      	            
+            	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	
+				<script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+				
+				
+				
+				<video id="preview" width="100%" height="100%"></video>
+				
+				<script type="text/javascript">
+				
+				  let scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
+				
+				  scanner.addListener('scan', function (content) {
+				
+				    //alert(content);
+				    window.location.href = "<?php echo $filenya;?>?artkd="+content; 
+				
+				  });
+				
+				  Instascan.Camera.getCameras().then(function (cameras) {
+				
+				    if (cameras.length > 0) {
+				
+				      scanner.start(cameras[0]);
+				
+				    } else {
+				
+				      console.error('No cameras found.');
+				
+				    }
+				
+				  }).catch(function (e) {
+				
+				    console.error(e);
+				
+				  });
+				
+				</script>
+				
+
+			<p>
+				
+			<?php
+
+				//jika null
+				if (empty($artkd))
+					{	
+					echo "<h3>
+					<font color='red'>
+					Silahkan Lakukan Scan QRCODE terlebih dahulu...!!!
+					</font>
+					</h3>";
+					}
+					
+				//jika ada
+				else if (!empty($artkd))
+					{
+					//query
+					$q = mysqli_query($koneksi, "SELECT * FROM m_user ".
+													"WHERE kd = '$artkd' ".
+													"OR kode = '$artkd'");
+					$row = mysqli_fetch_assoc($q);
+					$total = mysqli_num_rows($q);
+					
+					//cek 
+					if (!empty($total))
+						{
+						//detail e
+						$qyuk = mysqli_query($koneksi, "SELECT * FROM m_user ".
+															"WHERE kd = '$artkd' ".
+															"OR kode = '$artkd'");	
+						$ryuk = mysqli_fetch_assoc($qyuk);
+						$yuk_kd = cegah($ryuk['kd']);
+						$yuk_kode = cegah($ryuk['kode']);
+						$yuk_kodex = balikin($ryuk['kode']);
+						$yuk_nama = cegah($ryuk['nama']);
+						$yuk_namax = balikin($ryuk['nama']);
+						$yuk_jabatan = cegah($ryuk['jabatan']);
+						$yuk_jabatanx = balikin($ryuk['jabatan']);
+						$yuk_kelas = cegah($ryuk['kelas']);
+						$yuk_kelasx = balikin($ryuk['kelas']);
+						$yuk_tapel = cegah($ryuk['tapel']);
+						$yuk_nowa = balikin($ryuk['nowa']);
+						
+						
+						//jika belum ada
+						if (empty($yuk_nowa))
+							{
+							echo '<div class="card card-primary card-outline">
+				              <div class="card-body box-profile">
+				                <div class="text-center">
+				                  <img class="profile-user-img img-fluid img-circle"
+				                       src="'.$nil_foto1.'"
+				                       alt="'.$yuk_namax.'">
+				                </div>
+				
+				                <h3 class="profile-username text-center">'.$yuk_namax.'</h3>
+				
+				                <p class="text-muted text-center">'.$yuk_jabatanx.'</p>
+				
+				                <ul class="list-group list-group-unbordered mb-3">
+				                  <li class="list-group-item">
+				                    <font color="red"><b>
+				                    <p>
+				                    Nomor WA Belum Dimasukkan...!!
+				                    </p>
+				                    
+									<p>
+									Tidak Bisa Melakukan Presensi.
+									</p>
+				                    
+				                    </b></font>
+				                  </li>
+				                </ul>
+				                
+				              </div>
+				            </div>';
+									
+							}
+						else
+							{
+							//waktu
+							$qyuk2 = mysqli_query($koneksi, "SELECT * FROM m_waktu");
+							$ryuk2 = mysqli_fetch_assoc($qyuk2);
+							$yuk2_mjam = balikin($ryuk2['masuk_jam']);
+							$yuk2_mmenit = balikin($ryuk2['masuk_menit']);
+							
+							
+							
+							
+							
+							
+							$waktu_awal = strtotime("$tahun-$bulan-$tanggal $yuk2_mjam:$yuk2_mmenit:00");
+							$waktu_akhir = strtotime("$tahun-$bulan-$tanggal $jam:$menit:$detik"); // bisa juga waktu sekarang now()
+						        
+						
+						    //jika memang terlambat
+						    if ($waktu_awal < $waktu_akhir)
+								{
+								//menghitung selisih dengan hasil detik
+								$diffnya = $waktu_akhir - $waktu_awal;
+								
+								//membagi detik menjadi jam
+								$jamnya = floor($diffnya / (60 * 60));
+								
+								//membagi sisa detik setelah dikurangi $jam menjadi menit
+								$menitnya = $diffnya - $jamnya * (60 * 60);
+								
+								//menampilkan / print hasil
+								//echo 'Hasilnya adalah '.number_format($diff,0,",",".").' detik<br /><br />';
+								//echo 'Sehingga Anda memiliki sisa waktu promosi selama: ' . $jamnya .  ' jam dan ' . floor( $menitnya / 60 ) . ' menit';
+								
+								$menitnya2 = floor($menitnya / 60);
+								
+								$nilku = "$jamnya Jam, $menitnya2 Menit";
+								}
+								
+							else
+								{
+								$nilku = "-";
+								$jamnya = "0";
+								$menitnya2 = "0";
+								}
+							
+							
+							
+							
+							
+											
+						
+							//total point nya
+							$qyuk = mysqli_query($koneksi, "SELECT kd FROM user_presensi ".
+																"WHERE user_kd = '$yuk_kd'");
+							$ryuk = mysqli_fetch_assoc($qyuk);
+							$tyuk_subtotal = mysqli_num_rows($qyuk);
+						
+							
+						
+							//jika siswa
+							if ($yuk_jabatan == "SISWA")
+								{
+								//update kan
+								mysqli_query($koneksi, "UPDATE m_siswa SET jml_presensi = '$tyuk_subtotal' ".
+															"WHERE tapel = '$yuk_tapel' ".
+															"AND kode = '$e_kode'");
+	
+								$yuk_ket = "NIS : $yuk_kodex. Kelas : $yuk_kelasx";
+								$yuk_ket1 = "NIS : $yuk_kodex";
+								$yuk_ket2 = "Kelas : $yuk_kelasx";
+								
+								$i_filex1 = "$artkd-1.jpg";
+								$nil_foto1 = "$sumber/img/user_thumb.png";
+								}	
+								
+							else 
+								{
+								//update kan
+								mysqli_query($koneksi, "UPDATE m_guru SET jml_presensi = '$tyuk_subtotal' ".
+															"WHERE kode = '$e_kode'");
+																						
+								$yuk_ket = "NIP : $yuk_kodex";
+								$yuk_ket1 = "NIP : $yuk_kodex";
+								$yuk_ket2 = "";
+								
+								
+								$i_filex1 = "$artkd-1.jpg";
+								$nil_foto1 = "$sumber/filebox/pegawai/$artkd/$i_filex1";
+								}
+	
+							
+							
+							
+													
+							//kd
+							$xyz = md5("$tahun:$bulan:$tanggal:$e_kode:MASUK");
+							
+							
+							//jika ada
+							if (!empty($yuk_kd))
+								{
+								//insert
+								mysqli_query($koneksi, "INSERT INTO user_presensi(kd, user_kd, user_kode, ".
+															"user_nama, user_jabatan, user_tapel, user_kelas, ".
+															"tanggal, postdate, status, ".
+															"ket, telat_ket, telat_jam, telat_menit) VALUES ".
+															"('$xyz', '$yuk_kd', '$e_kode', ".
+															"'$yuk_nama', '$yuk_jabatan', '$yuk_tapel', '$yuk_kelas', ".
+															"'$today', '$today', 'MASUK', ".
+															"'-', '$nilku', '$jamnya', '$menitnya2')");
+															
+								//kirim wa
+								$pesannya = "$today
+	PRESENSI KEHADIRAN : MASUK
+	$yuk_jabatanx. $yuk_ket1. $yuk_ket2";
+	
+	
+								echo '<form name="formxku" id="formxku">
+								<textarea id="pesanku" name="pesanku" hidden>'.$pesannya.';'.$yuk_nowa.'</textarea>
+								</form>';
+								
+								?>
+								
+								
+								
+								
+								<script language='javascript'>
+								//membuat document jquery
+								$(document).ready(function(){
+								
+								
+									var datastring = $("#pesanku").serialize();
+									
+									$.ajax({
+									    url: "http://sosmedsekolah.com/i_kirim_wa.php",
+									    data: datastring,
+									    method: "post",
+									    success: function(data) 
+									    	{ 
+									    	$('#ikirimwa').html(data)
+									    	}
+									});
+								
+								
+								
+								
+								});
+								
+								</script>
+								
+								
+								
+								<div id="ikirimwa"></div>
+								<?php	
+								}	
+							
+							
+							
+							
+								
+		
+							echo '<div class="card card-primary card-outline">
+				              <div class="card-body box-profile">
+				                <div class="text-center">
+				                  <img class="profile-user-img img-fluid img-circle"
+				                       src="'.$nil_foto1.'"
+				                       alt="'.$yuk_namax.'">
+				                </div>
+				
+				                <h3 class="profile-username text-center">'.$yuk_namax.'</h3>
+				
+				                <p class="text-muted text-center">'.$yuk_jabatanx.'</p>
+				
+				                <ul class="list-group list-group-unbordered mb-3">
+				                  <li class="list-group-item">
+				                    <b>'.$yuk_ket1.'</b> <a class="float-right"><b>'.$yuk_ket2.'</b></a>
+				                  </li>
+				                </ul>
+				                
+				                
+								<div class="info-box bg-warning">
+					              <span class="info-box-icon"><i class="fa fa-calendar-check-o"></i></span>
+					
+					              <div class="info-box-content">
+					                <span class="info-box-number">'.$today.'</span>
+					
+					                <div class="progress">
+					                  <div class="progress-bar" style="width: 100%"></div>
+					                </div>
+					                <span class="progress-description">
+					                  Presensi Kehadiran Masuk Hari Ini..
+					                </span>
+					              </div>
+					            </div>
+	
+				              </div>
+				            </div>';
+				            }
+
+						
+						}
+					else
+						{
+						echo "<h3>
+						<font color='red'>
+						QRCODE TIDAK DITEMUKAN atau SALAH. Silahkan Coba Lagi...!!!
+						</font>
+						</h3>";
+						}
+					/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////				
+					}
+			?>	
+			
+			
+			</p>
+
+      	
+      	
+      </div>
+      
+      
+      <div class="tab-pane fade" id="custom-tabs-one-profile" role="tabpanel" aria-labelledby="custom-tabs-one-profile-tab">
+
+
+		<?php
+		echo '<form action="'.$filenya.'" method="post" name="formx">
+		<p>
+		<img src="'.$sumber.'/img/support.png" width="24" height="24" border="0">
+		<br>
+		<select name="tipe" class="btn btn-block btn-warning" required>
+		<option value="" selected></option>
+		<option value="tp02">Siswa</option>
+		<option value="tp01">Guru Mapel</option>
+		<option value="tp011">Guru BK</option>
+		<option value="tp03">Wali Kelas</option>
+		<option value="tp033">Piket</option>
+		<option value="tp042">Bendahara</option>
+		<option value="tp041">Sarpras</option>
+		<option value="tp04">Kepala Sekolah</option>
+		<option value="tp06">Administrator</option>
+		</select>
+		<br>
+		
+		
+		
+		Username :
+		<br>
+		<input name="usernamex" type="text" size="15" onKeyDown="var keyCode = event.keyCode;
+		if (keyCode == 13)
+			{
+			document.formx.btnOK.focus();
+			document.formx.btnOK.submit();
+			}" class="btn btn-block btn-warning" required>
+		<br>
+		
+		
+		Password :
+		<br>
+		<input name="passwordx" type="password" size="15" onKeyDown="var keyCode = event.keyCode;
+		if (keyCode == 13)
+			{
+			document.formx.btnOK.focus();
+			document.formx.btnOK.submit();
+			}" class="btn btn-block btn-warning" required>
+		<br>
+		
+		
+		<input name="btnOK" type="submit" value="MASUK &gt;&gt;&gt;" class="btn btn-danger">
+		</p>
+		
+		
+		</form>';
+		?>
+		
+ 
+	  </div>
+	  
+    </div>
+  </div>
+  <!-- /.card -->
+</div>
 
 
 
-Username :
-<br>
-<input name="usernamex" type="text" size="15" onKeyDown="var keyCode = event.keyCode;
-if (keyCode == 13)
-	{
-	document.formx.btnOK.focus();
-	document.formx.btnOK.submit();
-	}" class="btn btn-block btn-warning" required>
-<br>
-
-
-Password :
-<br>
-<input name="passwordx" type="password" size="15" onKeyDown="var keyCode = event.keyCode;
-if (keyCode == 13)
-	{
-	document.formx.btnOK.focus();
-	document.formx.btnOK.submit();
-	}" class="btn btn-block btn-warning" required>
-<br>
-
-
-<input name="btnOK" type="submit" value="MASUK &gt;&gt;&gt;" class="btn btn-danger">
-</p>
-
-
-</form>';
+<?php
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //isi
