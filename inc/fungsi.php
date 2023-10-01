@@ -65,6 +65,7 @@ function cegah($str)
 
 
 
+
 //untuk mencegah si jahil #2
 function cegah2($str)
 	{
@@ -82,6 +83,7 @@ function cegah2($str)
 						"'\)'",
 						"';'",
 						"'-'",
+						"'undefined'",
 						"'_'");
 
 	$replace = array ("xpsijix",
@@ -97,11 +99,14 @@ function cegah2($str)
 						"xkkurnanx",
 						"xkommax",
 						"xstrix",
+						"xstrix",
 						"xstripbwhx");
 
 	$str = preg_replace($search,$replace,$str);
 	return $str;
   	}
+
+
 
 
 
@@ -1997,6 +2002,6 @@ function add_days($my_date,$numdays)
 
 
 //VERSI /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-$versi = "SISFOKOL-SMP v6.786";
+$versi = "SISFOKOL-SMP v6.788";
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ?>

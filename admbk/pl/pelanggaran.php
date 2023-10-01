@@ -30,8 +30,8 @@ session_start();
 require("../../inc/config.php");
 require("../../inc/fungsi.php");
 require("../../inc/koneksi.php");
-require("../../inc/class/paging.php");
 require("../../inc/cek/admbk.php");
+require("../../inc/class/paging.php");
 $tpl = LoadTpl("../../template/admbk.html");
 
 
@@ -193,6 +193,7 @@ if ($_POST['btnSMPx2'])
 	$tcc = mysqli_num_rows($qcc);
 	$cc_pelkode = cegah($rcc['no']);
 	$cc_pelnama = cegah($rcc['nama']);
+	$cc_pelnama2 = balikin($rcc['nama']);
 	$cc_pelpoint = cegah($rcc['point']);
 	$cc_pelsanksi = cegah($rcc['sanksi']);
 	
@@ -210,8 +211,11 @@ if ($_POST['btnSMPx2'])
 	$tcc = mysqli_num_rows($qcc);
 	$cc_kd = nosql($rcc['kd']);
 	$cc_nama = cegah($rcc['nama']);
+	$cc_nama2 = balikin($rcc['nama']);
 	$cc_tapel = cegah($rcc['tapel']);
 	$cc_kelas = cegah($rcc['kelas']);
+	$cc_kelas2 = balikin($rcc['kelas']);
+	$cc_nowa = cegah($rcc['nowa']);
 
 
 
@@ -607,10 +611,97 @@ if ($s == "detail")
 								</div>
 							</div>
 						</div>';
+
+
+
+					
+						//cek
+						$qcc = mysqli_query($koneksi, "SELECT * FROM siswa_pelanggaran ".
+															"WHERE siswa_kd = '$swkd' ".
+															"ORDER BY tgl DESC");
+						$rcc = mysqli_fetch_assoc($qcc);
+						$tcc = mysqli_num_rows($qcc);
+						$i_tgl = balikin($rcc['tgl']);
+						$i_jenis = balikin($rcc['jenis_nama']);
+						$i_nama = balikin($rcc['point_nama']);
+						$i_nilai = balikin($rcc['point_nilai']);
+						$i_sanksi = balikin($rcc['point_sanksi']);
+
+						
+						
+					
+					
+					
+						//cek
+						$qcc = mysqli_query($koneksi, "SELECT * FROM m_siswa ".
+														"WHERE kd = '$swkd' ".
+														"ORDER BY tapel DESC");
+						$rcc = mysqli_fetch_assoc($qcc);
+						$tcc = mysqli_num_rows($qcc);
+						$cc_kd = nosql($rcc['kd']);
+						$cc_nama = cegah($rcc['nama']);
+						$cc_nama2 = balikin($rcc['nama']);
+						$cc_tapel = cegah($rcc['tapel']);
+						$cc_kelas = cegah($rcc['kelas']);
+						$cc_kelas2 = balikin($rcc['kelas']);
+						$cc_nowa = cegah($rcc['nowa']);
+						
+
+
+						//kirim wa
+						$yuk_nowa = balikin($cc_nowa);
+						$pesannya = "$i_tgl
+$cc_nama2
+NIS:$nis 
+KELAS:$cc_kelas2
+		 
+TELAH MELAKUKAN PELANGGARAN : 
+$i_nama. 
+
+SANKSI :
+$i_sanksi
+
+
+";
+				
+				
+						echo '<form name="formxku" id="formxku">
+						<textarea id="pesanku" name="pesanku" hidden>'.$pesannya.';'.$yuk_nowa.'</textarea>
+						</form>';								
 						?>
-
-
-
+						
+						
+						
+						
+						<script language='javascript'>
+						//membuat document jquery
+						$(document).ready(function(){
+						
+						
+							var datastring = $("#pesanku").serialize();
+							
+							$.ajax({
+							    url: "http://sosmedsekolah.com/i_kirim_wa.php",
+							    data: datastring,
+							    method: "post",
+							    success: function(data) 
+							    	{ 
+							    	$('#ikirimwa').html(data)
+							    	}
+							});
+						
+						
+						
+						
+						});
+						
+						</script>
+						
+						
+						
+						<div id="ikirimwa"></div>
+				
+						
  
                   </div>
 

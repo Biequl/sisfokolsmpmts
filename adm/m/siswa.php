@@ -1,8 +1,8 @@
 <?php
 ///////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////
-/////// SISFOKOL_SMA_v6.78_(Code:Tekniknih)                     ///////
-/////// (Sistem Informasi Sekolah untuk SMA)                    ///////
+/////// SISFOKOL_SMP_v6.78_(Code:Tekniknih)                     ///////
+/////// (Sistem Informasi Sekolah untuk SMP)                    ///////
 ///////////////////////////////////////////////////////////////////////
 /////// Dibuat oleh :                                           ///////
 /////// Agus Muhajir, S.Kom                                     ///////
@@ -84,6 +84,7 @@ if ($_POST['btnIM'])
 //import sekarang
 if ($_POST['btnIMX'])
 	{
+	/*
 	$filex_namex2 = strip(strtolower($_FILES['filex_xls']['name']));
 
 	//nek null
@@ -231,6 +232,103 @@ if ($_POST['btnIMX'])
 			exit();
 			}
 		}
+	 */
+	 
+		 
+		
+	$e_nilai = balikin($_POST['display_excel_data']);
+	
+	
+	
+
+	//baca per loop
+	for ($k=2;$k<=10000;$k++)
+		{
+		//nilai
+		$kk = $k - 1 ;
+		
+		//pecah
+		$pecahku = explode("<br>", $e_nilai);
+		$pecahku1 = trim($pecahku[$kk]); 
+		
+		
+		//jika ada
+		if (!empty($pecahku1))
+			{
+			//pecah string
+			$pecahya = explode(";", $pecahku1);
+		      $i_xyz = md5("$x$k");
+		      $i_tapel = cegah2(trim($pecahya[1]));
+		      $i_kelas = cegah2(trim($pecahya[2]));
+		      $i_nourut = cegah2(trim($pecahya[3]));
+		      $i_kode = cegah2(trim($pecahya[4]));
+		      $i_nama = cegah2(trim($pecahya[5]));
+		      $i_nowa = cegah2(trim($pecahya[6]));
+
+
+					  
+				//user pass
+				$i_user = $i_kode;
+				$i_pass = md5($i_kode);
+
+
+				//jika ada
+				if (!empty($i_user))
+					{
+					  //user pass
+					  $i_kodex = md5("$i_tapel$i_kode");
+					  
+					  
+					  $i_qrcode = $i_kode;
+					  
+					  
+						//cek
+						$qcc = mysqli_query($koneksi, "SELECT * FROM m_siswa ".
+														"WHERE tapel = '$i_tapel' ".
+														"AND kode = '$i_kode'");
+						$rcc = mysqli_fetch_assoc($qcc);
+						$tcc = mysqli_num_rows($qcc);
+		
+						//jika ada, update				
+						if (!empty($tcc))
+							{
+							mysqli_query($koneksi, "UPDATE m_siswa SET nama = '$i_nama' ".
+														"WHERE tapel = '$i_tapel' ".
+														"AND kode = '$i_kode'");
+							}
+		
+		
+						else
+							{
+							//insert
+							mysqli_query($koneksi, "INSERT INTO m_siswa(kd, tapel, kelas, ".
+														"nourut, kode, nama, qrcode, nowa, postdate) VALUES ".
+														"('$i_kodex', '$i_tapel', '$i_kelas', ".
+														"'$i_nourut', '$i_kode', '$i_nama', '$i_qrcode', '$i_nowa', '$today')");
+														
+																												
+							
+							//insert
+							mysqli_query($koneksi, "INSERT INTO m_user(kd, usernamex, passwordx, ".
+														"kode, nama, jabatan, nowa, ".
+														"tapel, kelas, postdate) VALUES ".
+														"('$i_kodex', '$i_kode', '$i_kodex', ".
+														"'$i_kode', '$i_nama', 'SISWA', '$i_nowa', ".
+														"'$i_tapel', '$i_kelas', '$today')");
+														
+							}
+
+					}
+			
+			
+			}
+		}
+
+
+
+	//re-direct
+	xloc($filenya);
+	exit();	
 	}
 
 
@@ -552,6 +650,11 @@ require("../../template/js/swap.js");
 ?>
 
 
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.min.js">
+
+
   
   <script>
   	$(document).ready(function() {
@@ -573,9 +676,13 @@ if ($s == "import")
 		
 	<?php
 	echo '<form action="'.$filenya.'" method="post" enctype="multipart/form-data" name="formxx2">
-	<p>
-		<input name="filex_xls" type="file" size="30" class="btn btn-warning">
-	</p>
+	<input type="file" name="file_upload" id="file_upload" class="btn btn-warning" onchange="upload()">
+	<br>
+	
+	
+    <textarea name="display_excel_data" id="display_excel_data" hidden></textarea>
+
+
 
 	<p>
 		<input name="btnBTL" type="submit" value="BATAL" class="btn btn-info">
@@ -585,6 +692,72 @@ if ($s == "import")
 	
 	</form>';	
 	?>
+		
+
+
+
+    <script>// Method to upload a valid excel file
+      function upload() {
+        var files = document.getElementById('file_upload').files;
+        if(files.length==0){
+          alert("Please choose any file...");
+          return;
+        }
+        var filename = files[0].name;
+        var extension = filename.substring(filename.lastIndexOf(".")).toUpperCase();
+        if (extension == '.XLS' || extension == '.XLSX') {
+          //Here calling another method to read excel file into json
+          excelFileToJSON(files[0]);
+        }
+        else{
+          alert("Please select a valid excel file.");
+        }
+      }
+      //Method to read excel file and convert it into JSON 
+      function excelFileToJSON(file){
+        try {
+          var reader = new FileReader();
+          reader.readAsBinaryString(file);
+          reader.onload = function(e) {
+            var data = e.target.result;
+            var workbook = XLSX.read(data, {
+              type : 'binary'
+            }
+                                    );
+            var result = {
+            };
+            var firstSheetName = workbook.SheetNames[0];
+            //reading only first sheet data
+            var jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheetName]);
+            //displaying the json result into HTML table
+            displayJsonToHtmlTable(jsonData);
+
+			//alert(displayJsonToHtmlTable(jsonData));
+			
+			
+          }
+        }
+        catch(e){
+          console.error(e);
+        }
+      }
+      //Method to display the data in HTML Table
+      function displayJsonToHtmlTable(jsonData){
+        var table=document.getElementById("display_excel_data");
+        if(jsonData.length>0){
+          var htmlData='NO.;TAPEL;KELAS;NOURUT;NIS;NAMA;NOWA;<br>';
+          for(var i=0;i<jsonData.length;i++){
+            var row=jsonData[i];
+            htmlData+=''+row["NO."]+';'+row["TAPEL"]+';'+row["KELAS"]+';'+row["NOURUT"]+';'+row["NIS"]+';'+row["NAMA"]+';'+row["NOWA"]+';<br>';
+          }
+          table.innerHTML=htmlData;
+        }
+        else{
+          table.innerHTML='There is no data in Excel';
+        }
+      }
+    </script> 
+
 		
 
 

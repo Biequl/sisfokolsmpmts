@@ -25,7 +25,6 @@
 
 session_start();
 
-
 require("../../inc/config.php");
 require("../../inc/fungsi.php");
 require("../../inc/koneksi.php");
@@ -42,6 +41,8 @@ $judulku = "[ABSENSI]. Absensi Harian";
 $judulx = $judul;
 $kd = nosql($_REQUEST['kd']);
 $s = nosql($_REQUEST['s']);
+$swkd = cegah($_REQUEST['swkd']);
+$swnowa = cegah($_REQUEST['swnowa']);
 $kunci = cegah($_REQUEST['kunci']);
 $kunci2 = balikin($_REQUEST['kunci']);
 $page = nosql($_REQUEST['page']);
@@ -183,6 +184,10 @@ if ($_POST['btnSMP'])
 											"WHERE tapel = '$yuk_tapel' ".
 											"AND kode = '$e_kode'");
 		$ryuk = mysqli_fetch_assoc($qyuk);
+		$swkd = balikin($ryuk['kd']);
+		$swnama = balikin($ryuk['nama']);
+		$swnowa = balikin($ryuk['nowa']);
+		$swjabatan = "SISWA";
 		$yuk_abs_sakit = balikin($ryuk['jml_absen_sakit']);
 		$yuk_abs_ijin = balikin($ryuk['jml_absen_ijin']);
 		$yuk_abs_alpha = balikin($ryuk['jml_absen_alpha']);
@@ -235,6 +240,10 @@ if ($_POST['btnSMP'])
 		$qyuk = mysqli_query($koneksi, "SELECT * FROM m_pegawai ".
 											"WHERE kode = '$e_kode'");
 		$ryuk = mysqli_fetch_assoc($qyuk);
+		$swkd = balikin($ryuk['kd']);
+		$swnama = balikin($ryuk['nama']);
+		$swnowa = balikin($ryuk['nowa']);
+		$swjabatan = "PEGAWAI";
 		$yuk_abs_sakit = balikin($ryuk['jml_absen_sakit']);
 		$yuk_abs_ijin = balikin($ryuk['jml_absen_ijin']);
 		$yuk_abs_alpha = balikin($ryuk['jml_absen_alpha']);
@@ -255,7 +264,8 @@ if ($_POST['btnSMP'])
 	
 
 	//re-direct
-	xloc($filenya);
+	$ke = "$filenya?swkd=$yuk_kd&swnowa=$swnowa";
+	xloc($ke);
 	exit();
 	}
 
@@ -436,8 +446,112 @@ echo '</tbody>
 
 
 
+//jika ada
+if (!empty($swkd))
+	{
+	//detail e
+	$qyuk = mysqli_query($koneksi, "SELECT * FROM m_user ".
+										"WHERE kd = '$swkd' ".
+										"ORDER BY tapel DESC");
+	$ryuk = mysqli_fetch_assoc($qyuk);
+	$yuk_kd = cegah($ryuk['kd']);
+	$yuk_nama = cegah($ryuk['nama']);
+	$yuk_kode = cegah($ryuk['kode']);
+	$yuk_jabatan = cegah($ryuk['jabatan']);
+	$yuk_kelas = cegah($ryuk['kelas']);
+	$yuk_tapel = cegah($ryuk['tapel']);
+	
+
+	$qku = mysqli_query($koneksi, "SELECT * FROM user_absensi ".
+									"WHERE user_kd = '$swkd' ".
+									"ORDER BY postdate DESC");
+	$rku = mysqli_fetch_assoc($qku);
+	$ku_ket = balikin($rku['ket']);
+	
+								
+	//jika siswa
+	if ($yuk_jabatan == "SISWA")
+		{
+		//detail
+		$qyuk = mysqli_query($koneksi, "SELECT * FROM m_siswa ".
+											"WHERE kode = '$yuk_kode' ".
+											"ORDER BY tapel DESC");
+		$ryuk = mysqli_fetch_assoc($qyuk);
+		$swkd = balikin($ryuk['kd']);
+		$swkode = balikin($ryuk['kode']);
+		$swkelas = balikin($ryuk['kelas']);
+		$swnama = balikin($ryuk['nama']);
+		$swnowa = balikin($ryuk['nowa']);
+		$swjabatan = "SISWA:$swkode. $swkelas";
+		}
 
 
+	//jika guru
+	else if ($yuk_jabatan == "PEGAWAI")
+		{
+		//detail
+		$qyuk = mysqli_query($koneksi, "SELECT * FROM m_pegawai ".
+											"WHERE kode = '$yuk_kode'");
+		$ryuk = mysqli_fetch_assoc($qyuk);
+		$swkd = balikin($ryuk['kd']);
+		$swkode = balikin($ryuk['kode']);
+		$swnama = balikin($ryuk['nama']);
+		$swnowa = balikin($ryuk['nowa']);
+		$swjabatan = "PEGAWAI:$swkode";
+		}
+
+
+
+	//kirim wa
+	$yuk_nowa = balikin($swnowa);
+	$pesannya = "$today
+$swnama
+$swjabatan
+			 
+TIDAK HADIR, DIKARENAKAN : 
+$ku_ket.
+	
+	";
+	
+	
+	echo '<form name="formxku" id="formxku">
+	<textarea id="pesanku" name="pesanku" hidden>'.$pesannya.';'.$yuk_nowa.'</textarea>
+	</form>';								
+	?>
+	
+	
+	
+	
+	<script language='javascript'>
+	//membuat document jquery
+	$(document).ready(function(){
+	
+	
+		var datastring = $("#pesanku").serialize();
+		
+		$.ajax({
+		    url: "http://sosmedsekolah.com/i_kirim_wa.php",
+		    data: datastring,
+		    method: "post",
+		    success: function(data) 
+		    	{ 
+		    	$('#ikirimwa').html(data)
+		    	}
+		});
+	
+	
+	
+	
+	});
+	
+	</script>
+	
+	
+	
+	<div id="ikirimwa"></div>
+	
+	<?php
+	}
 
 //isi
 $isi = ob_get_contents();
