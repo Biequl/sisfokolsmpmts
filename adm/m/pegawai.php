@@ -233,10 +233,10 @@ if ($_POST['btnIMX'])
 			$pecahya = explode(";", $pecahku1);
 		      $i_xyz = md5("$x$k");
 		      $i_nip = cegah2(trim($pecahya[1]));
-		      $i_username = cegah2(trim($pecahya[1]));
-		      $i_nama = cegah2(trim($pecahya[1]));
-		      $i_jabatan = cegah2(trim($pecahya[1]));
-		      $i_nowa = cegah2(trim($pecahya[1]));
+		      $i_username = cegah2(trim($pecahya[2]));
+		      $i_nama = cegah2(trim($pecahya[3]));
+		      $i_jabatan = cegah2(trim($pecahya[4]));
+		      $i_nowa = cegah2(trim($pecahya[5]));
 
 
 					  
