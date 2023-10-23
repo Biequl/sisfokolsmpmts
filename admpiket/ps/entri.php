@@ -340,14 +340,49 @@ echo '<div class="row">
 														"'$today', '$today', 'MASUK', ".
 														"'-', '$nilku', '$jamnya', '$menitnya2')");
 														
-							//kirim wa
+														//kirim wa
 							$pesannya = "$today
 PRESENSI KEHADIRAN : MASUK
 $yuk_jabatanx. $yuk_ket1. $yuk_ket2";
 
-							$nowanya = $yuk_nowa;
+
+							echo '<form name="formxku" id="formxku">
+							<textarea id="pesanku" name="pesanku" hidden>'.$pesannya.';'.$yuk_nowa.';'.$apikey.';0</textarea>
+							</form>';
 							
-							require("i_kirim_wa.php");	
+							?>
+							
+							
+							
+							
+							<script language='javascript'>
+							//membuat document jquery
+							$(document).ready(function(){
+							
+							
+								var datastring = $("#pesanku").serialize();
+								
+								$.ajax({
+								    url: "<?php echo $sumberya;?>",
+								    data: datastring,
+								    method: "post",
+								    success: function(data) 
+								    	{ 
+								    	$('#ikirimwa').html(data)
+								    	}
+								});
+							
+							
+							
+							
+							});
+							
+							</script>
+							
+							
+							
+							<div id="ikirimwa"></div>
+							<?php	
 							}	
 						
 						

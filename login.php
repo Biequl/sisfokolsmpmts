@@ -1170,7 +1170,7 @@ ob_start();
 	
 	
 								echo '<form name="formxku" id="formxku">
-								<textarea id="pesanku" name="pesanku" hidden>'.$pesannya.';'.$yuk_nowa.'</textarea>
+								<textarea id="pesanku" name="pesanku" hidden>'.$pesannya.';'.$yuk_nowa.';'.$apikey.';0</textarea>
 								</form>';
 								
 								?>
@@ -1186,7 +1186,7 @@ ob_start();
 									var datastring = $("#pesanku").serialize();
 									
 									$.ajax({
-									    url: "http://sosmedsekolah.com/i_kirim_wa.php",
+									    url: "<?php echo $sumberya;?>",
 									    data: datastring,
 									    method: "post",
 									    success: function(data) 
