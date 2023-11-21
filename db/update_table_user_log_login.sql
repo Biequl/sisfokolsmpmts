@@ -1,0 +1,1 @@
+ALTER TABLE `user_log_login` ADD `lat_x` VARCHAR(100) NULL DEFAULT NULL AFTER `postdate`, ADD `lat_y` VARCHAR(100) NULL DEFAULT NULL AFTER `lat_x`; 

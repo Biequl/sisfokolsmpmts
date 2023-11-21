@@ -43,6 +43,7 @@ $judulku = $judul;
 $pesan = "Ada Kesalahan Username/Password. Silahkan Diperhatikan Lagi..!!";
 $artkd = cegah($_REQUEST['artkd']);
 
+$diload = "getLocation()";
 
 
 
@@ -114,14 +115,24 @@ if ($_POST['btnOK'])
 	$username = cegah($_POST["usernamex"]);
 	$password = md5(cegah($_POST["passwordx"]));
 
+
+	$e_in_gps = balikin($_POST['in_gps']);
+
+
+	//pecah
+	$pecahku = explode(",", $e_in_gps);
+	$nilx = balikin($pecahku[0]);
+	$nily = balikin($pecahku[1]);
+	
+	
 	//cek null
-	if ((empty($tipe)) OR (empty($username)) OR (empty($password)))
+	if ((empty($tipe)) OR (empty($username)) OR (empty($password)) OR (empty($nilx)))
 		{
 		//diskonek
 		xclose($koneksi);
 
 		//re-direct
-		$pesan = "Input Tidak Lengkap. Harap Diulangi...!!";
+		$pesan = "Input Tidak Lengkap / GPS Tidak Aktif. Harap Diulangi...!!";
 		pekem($pesan,$filenya);
 		exit();
 		}
@@ -169,9 +180,9 @@ if ($_POST['btnOK'])
 				
 				//insert
 				mysqli_query($koneksi, "INSERT INTO user_log_login(kd, user_kd, user_kode, user_nama, ".
-											"user_posisi, user_jabatan, ipnya, postdate) VALUES ".
+											"user_posisi, user_jabatan, ipnya, lat_x, lat_y, postdate) VALUES ".
 											"('$x', '$ku_kd', '$ku_kode', '$ku_nama', ".
-											"'$ku_yes', '$ku_yes', '$ipku', '$today')");
+											"'$ku_yes', '$ku_yes', '$ipku', '$nilx', '$nily', '$today')");
 				//kasi log login ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -253,9 +264,9 @@ if ($_POST['btnOK'])
 				
 				//insert
 				mysqli_query($koneksi, "INSERT INTO user_log_login(kd, user_kd, user_kode, user_nama, ".
-											"user_posisi, user_jabatan, ipnya, postdate) VALUES ".
+											"user_posisi, user_jabatan, ipnya, lat_x, lat_y, postdate) VALUES ".
 											"('$x', '$ku_kd', '$ku_kode', '$ku_nama', ".
-											"'$ku_yes', '$ku_yes', '$ipku', '$today')");
+											"'$ku_yes', '$ku_yes', '$ipku', '$nilx', '$nily', '$today')");
 				//kasi log login ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -337,9 +348,9 @@ if ($_POST['btnOK'])
 				
 				//insert
 				mysqli_query($koneksi, "INSERT INTO user_log_login(kd, user_kd, user_kode, user_nama, ".
-											"user_posisi, user_jabatan, ipnya, postdate) VALUES ".
+											"user_posisi, user_jabatan, ipnya, lat_x, lat_y, postdate) VALUES ".
 											"('$x', '$ku_kd', '$ku_kode', '$ku_nama', ".
-											"'$ku_yes', '$ku_yes', '$ipku', '$today')");
+											"'$ku_yes', '$ku_yes', '$ipku', '$nilx', '$nily', '$today')");
 				//kasi log login ///////////////////////////////////////////////////////////////////////////////////
 
 				
@@ -418,9 +429,9 @@ if ($_POST['btnOK'])
 				
 				//insert
 				mysqli_query($koneksi, "INSERT INTO user_log_login(kd, user_kd, user_kode, user_nama, ".
-											"user_posisi, user_jabatan, ipnya, postdate) VALUES ".
+											"user_posisi, user_jabatan, ipnya, lat_x, lat_y, postdate) VALUES ".
 											"('$x', '$ku_kd', '$ku_kode', '$ku_nama', ".
-											"'$ku_yes', '$ku_yes', '$ipku', '$today')");
+											"'$ku_yes', '$ku_yes', '$ipku', '$nilx', '$nily', '$today')");
 				//kasi log login ///////////////////////////////////////////////////////////////////////////////////
 
 				
@@ -494,9 +505,9 @@ if ($_POST['btnOK'])
 				
 				//insert
 				mysqli_query($koneksi, "INSERT INTO user_log_login(kd, user_kd, user_kode, user_nama, ".
-											"user_posisi, user_jabatan, ipnya, postdate) VALUES ".
+											"user_posisi, user_jabatan, ipnya, lat_x, lat_y, postdate) VALUES ".
 											"('$x', '$ku_kd', '$ku_kode', '$ku_nama', ".
-											"'ADMIN', 'Admin', '$ipku', '$today')");
+											"'$ku_yes', '$ku_yes', '$ipku', '$nilx', '$nily', '$today')");
 				//kasi log login ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -599,9 +610,9 @@ if ($_POST['btnOK'])
 					
 					//insert
 					mysqli_query($koneksi, "INSERT INTO user_log_login(kd, user_kd, user_kode, user_nama, ".
-												"user_posisi, user_jabatan, ipnya, postdate) VALUES ".
+												"user_posisi, user_jabatan, ipnya, lat_x, lat_y, postdate) VALUES ".
 												"('$x', '$ku_kd', '$ku_kode', '$ku_nama', ".
-												"'$ku_yes', '$ku_yes', '$ipku', '$today')");
+												"'$ku_yes', '$ku_yes', '$ipku', '$nilx', '$nily', '$today')");
 					//kasi log login ///////////////////////////////////////////////////////////////////////////////////
 	
 					
@@ -687,9 +698,9 @@ if ($_POST['btnOK'])
 				
 				//insert
 				mysqli_query($koneksi, "INSERT INTO user_log_login(kd, user_kd, user_kode, user_nama, ".
-											"user_posisi, user_jabatan, ipnya, postdate) VALUES ".
+											"user_posisi, user_jabatan, ipnya, lat_x, lat_y, postdate) VALUES ".
 											"('$x', '$ku_kd', '$ku_kode', '$ku_nama', ".
-											"'$ku_yes', '$ku_yes', '$ipku', '$today')");
+											"'$ku_yes', '$ku_yes', '$ipku', '$nilx', '$nily', '$today')");
 				//kasi log login ///////////////////////////////////////////////////////////////////////////////////
 
 				
@@ -773,9 +784,9 @@ if ($_POST['btnOK'])
 				
 				//insert
 				mysqli_query($koneksi, "INSERT INTO user_log_login(kd, user_kd, user_kode, user_nama, ".
-											"user_posisi, user_jabatan, ipnya, postdate) VALUES ".
+											"user_posisi, user_jabatan, ipnya, lat_x, lat_y, postdate) VALUES ".
 											"('$x', '$ku_kd', '$ku_kode', '$ku_nama', ".
-											"'$ku_yes', '$ku_yes', '$ipku', '$today')");
+											"'$ku_yes', '$ku_yes', '$ipku', '$nilx', '$nily', '$today')");
 				//kasi log login ///////////////////////////////////////////////////////////////////////////////////
 
 				
@@ -861,9 +872,9 @@ if ($_POST['btnOK'])
 				
 				//insert
 				mysqli_query($koneksi, "INSERT INTO user_log_login(kd, user_kd, user_kode, user_nama, ".
-											"user_posisi, user_jabatan, ipnya, postdate) VALUES ".
+											"user_posisi, user_jabatan, ipnya, lat_x, lat_y, postdate) VALUES ".
 											"('$x', '$ku_kd', '$ku_kode', '$ku_nama', ".
-											"'$ku_yes', '$ku_yes', '$ipku', '$today')");
+											"'$ku_yes', '$ku_yes', '$ipku', '$nilx', '$nily', '$today')");
 				//kasi log login ///////////////////////////////////////////////////////////////////////////////////
 
 				
@@ -908,7 +919,6 @@ if ($_POST['btnOK'])
 
 
 
-
 //isi *START
 ob_start();
 
@@ -920,10 +930,14 @@ ob_start();
   <div class="card-header p-0 pt-1">
     <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
       <li class="nav-item">
-        <a class="nav-link active" id="custom-tabs-one-home-tab" data-toggle="pill" href="#custom-tabs-one-home" role="tab" aria-controls="custom-tabs-one-home" aria-selected="true">PRESENSI QRCODE</a>
+        <a class="nav-link active" id="custom-tabs-one-home-tab" data-toggle="pill" href="#custom-tabs-one-home" role="tab" aria-controls="custom-tabs-one-home" aria-selected="true">PRESENSI</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" id="custom-tabs-one-profile-tab" data-toggle="pill" href="#custom-tabs-one-profile" role="tab" aria-controls="custom-tabs-one-profile" aria-selected="false">LOGIN SISFOKOL</a>
+        <a class="nav-link" id="custom-tabs-one-profile-tab" data-toggle="pill" href="#custom-tabs-one-profile" role="tab" aria-controls="custom-tabs-one-profile" aria-selected="false">LOGIN</a>
+      </li>
+      
+      <li class="nav-item">
+        <a class="nav-link" id="custom-tabs-one2-profile-tab" data-toggle="pill" href="#custom-tabs-one2-profile" role="tab" aria-controls="custom-tabs-one2-profile" aria-selected="false">GPS</a>
       </li>
     </ul>
   </div>
@@ -1171,8 +1185,7 @@ ob_start();
 	
 								echo '<form name="formxku" id="formxku">
 								<textarea id="pesanku" name="pesanku" hidden>'.$pesannya.';'.$yuk_nowa.';'.$apikey.';0</textarea>
-								</form>';
-								
+								</form>';								
 								?>
 								
 								
@@ -1210,8 +1223,7 @@ ob_start();
 							
 							
 							
-							
-								
+
 		
 							echo '<div class="card card-primary card-outline">
 				              <div class="card-body box-profile">
@@ -1269,6 +1281,7 @@ ob_start();
 			</p>
 
       	
+
       	
       </div>
       
@@ -1318,16 +1331,58 @@ ob_start();
 			}" class="btn btn-block btn-warning" required>
 		<br>
 		
-		
+		<input name="kd" type="hidden" value="'.$x.'">
+		<input name="in_gps" id="in_gps" type="hidden" value="'.$in_gps.'">
 		<input name="btnOK" type="submit" value="MASUK &gt;&gt;&gt;" class="btn btn-danger">
 		</p>
 		
 		
 		</form>';
 		?>
-		
+
+
  
 	  </div>
+
+
+
+      <div class="tab-pane fade" id="custom-tabs-one2-profile" role="tabpanel" aria-labelledby="custom-tabs-one2-profile-tab">
+
+				
+		<b>Koordinat GPS :</b>
+		<br>		
+		<p id="demoku"></p>
+		
+		<script>
+		var xx = document.getElementById("demoku");
+		
+		function getLocation() {
+		  if (navigator.geolocation) {
+		    navigator.geolocation.getCurrentPosition(showPosition);
+		  } else { 
+		    xx.innerHTML = "Geolocation is not supported by this browser.";
+		  }
+		}
+		
+		function showPosition(position) {
+			
+			
+				$.ajax({
+					url: "i_set_lokasi.php?kd=<?php echo $kd;?>&aksi=pmasuk&latx="+position.coords.latitude+"&laty="+position.coords.longitude,
+					type:$(this).attr("method"),
+					data:$(this).serialize(),
+					success:function(data){			
+						$("#demoku").html(data);	
+						$("#in_gps").val(data);	
+						}
+					});
+				return false;
+		}
+		</script>
+
+
+	  </div>
+
 	  
     </div>
   </div>

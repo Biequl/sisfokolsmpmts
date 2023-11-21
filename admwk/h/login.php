@@ -165,6 +165,7 @@ echo '<form action="'.$filenya.'" method="post" name="formx">
 <tr valign="top" bgcolor="'.$warnaheader.'">
 <td width="200"><strong><font color="'.$warnatext.'">POSTDATE</font></strong></td>
 <td><strong><font color="'.$warnatext.'">IP</font></strong></td>
+<td><strong><font color="'.$warnatext.'">GPS</font></strong></td>
 </tr>
 </thead>
 <tbody>';
@@ -188,6 +189,8 @@ if ($count != 0)
 		$i_kd = nosql($data['kd']);
 		$i_postdate = balikin($data['postdate']);
 		$i_ket = balikin($data['ipnya']);
+		$i_latx = balikin($data['lat_x']);
+		$i_laty = balikin($data['lat_y']);
 		
 		
 		//set udah dibaca
@@ -201,6 +204,7 @@ if ($count != 0)
 		echo "<tr valign=\"top\" bgcolor=\"$warna\" onmouseover=\"this.bgColor='$warnaover';\" onmouseout=\"this.bgColor='$warna';\">";
 		echo '<td>'.$i_postdate.'</td>
 		<td>'.$i_ket.'</td>
+		<td>'.$i_latx.', '.$i_laty.'</td>
         </tr>';
 		}
 	while ($data = mysqli_fetch_assoc($result));
