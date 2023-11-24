@@ -226,7 +226,7 @@ echo '<table cellpadding="4" cellspacing="0" border="1">
 			$jus_nama = balikin($rjus['nama']);
 			
 			
-			
+			/*
 			//nilai
 			$qku = mysqli_query($koneksi, "SELECT * FROM siswa_nilai_smt ".
 												"WHERE tapel = '$tapelkd' ".
@@ -241,6 +241,22 @@ echo '<table cellpadding="4" cellspacing="0" border="1">
 			$i_knilai = balikin($rku['k_na']);
 			$i_kpredikat = balikin($rku['k_na_pred']);
 			$i_kket = balikin($rku['k_isi']);
+			*/
+			
+			
+			//nilai
+			$qku = mysqli_query($koneksi, "SELECT * FROM kurmer_nilai_asesmen_sumatif ".
+												"WHERE tapel = '$tapelkd' ".
+												"AND kelas = '$kelkd' ".
+												"AND smt = '$smt' ".
+												"AND siswa_nis = '$ku_nis' ".
+												"AND kode = '$jus_kode'");
+			$rku = mysqli_fetch_assoc($qku);
+			$i_lm_na = balikin($rku['lm_na']);
+			$i_as_non_tes = balikin($rku['as_non_tes']);
+			$i_as_tes = balikin($rku['as_tes']);
+			$i_as_na = balikin($rku['as_na']);
+			$i_pnilai = balikin($rku['nil_raport']);
 			
 
 
